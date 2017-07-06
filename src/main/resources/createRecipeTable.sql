@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS RECIPES(
+id BIGINT NOT NULL,
+patient_id BIGINT NOT NULL,
+doctor_id BIGINT NOT NULL,
+date_of_create DATE NOT NULL,
+validity INT NOT NULL,
+priority VARCHAR(20) NOT NULL,
+PRIMARY KEY (id),
+);
+
