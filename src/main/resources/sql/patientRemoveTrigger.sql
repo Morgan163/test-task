@@ -1,0 +1,11 @@
+CREATE TRIGGER patientDeleteTrigger BEFORE DELETE ON PATIENTS
+ REFERENCING OLD AS old_row
+ FOR EACH ROW
+ BEGIN ATOMIC
+  IF EXISTS (
+    SELECT *
+    FROM RECIPES
+    WHERE RESIPES.patient_id=old_row.id) THEN
+         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Exist recipe with this patient';
+  END IF;
+ END;

@@ -1,0 +1,11 @@
+CREATE TRIGGER doctorDeleteTrigger BEFORE DELETE ON DOCTORS
+ REFERENCING OLD AS old_row
+ FOR EACH ROW
+ BEGIN ATOMIC
+  IF EXISTS (
+    SELECT *
+    FROM RECIPES
+    WHERE doctor_id=old_row.id) THEN
+         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Exist recipe with this doctor';
+  END IF;
+ END;

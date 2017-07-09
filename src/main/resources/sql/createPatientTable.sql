@@ -3,6 +3,6 @@ id BIGINT NOT NULL,
 name VARCHAR(20) NOT NULL,
 surname VARCHAR(30) NOT NULL,
 second_name VARCHAR(30) NOT NULL,
-phone_number INTEGER NOT NULL,
+phone_number BIGINT NOT NULL,
 PRIMARY KEY(id)
 );

@@ -1,10 +1,7 @@
 package com.haulmont.testtask.DB;
 
 import java.io.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 
 /**
@@ -16,12 +13,19 @@ public class ConnectionToDb {
         ConnectionToDb db = new ConnectionToDb();
         if (db.loadDriver()) {
             Connection connection = db.getConnection();
-            if (!db.executeSQL(connection,"SELECT * FROM PATIENTS")) {
-                db.execute(connection, db.getSqlFromFile("src\\main\\resources\\createPatientTable.sql"));
-                db.execute(connection, db.getSqlFromFile("src\\main\\resources\\createDoctorTable.sql"));
-                db.execute(connection, db.getSqlFromFile("src\\main\\resources\\createRecipeTable.sql"));
-                db.execute(connection, db.getSqlFromFile("src\\main\\resources\\alterTableForRecipe.sql"));
+            if (!db.executeSQL(connection,"SELECT * FROM RECIPES")) {
+                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/createPatientTable.sql"));
+                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/createDoctorTable.sql"));
+                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/createRecipeTable.sql"));
+                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/alterTableForRecipe.sql"));
+                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/patientSequence.sql"));
+                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/doctorSequence.sql"));
+                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/recipeSequence.sql"));
+                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/insertIntoTables.sql"));
+                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/patientRemoveTrigger.sql"));
+                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/doctorRemoveTrigger.sql"));
             }
+            db.executeSQL(connection,"DELETE FROM DOCTORS WHERE id = 2");
             db.closeConnection(connection);
         }
 
@@ -76,10 +80,18 @@ public class ConnectionToDb {
     public boolean executeSQL(Connection connection, String sql) {
         try {
             Statement statement = connection.createStatement();
-            statement.execute(sql);
+            ResultSet resultSet = statement.executeQuery(sql);
+            while(resultSet.next()){
+                System.out.println(resultSet.getLong(1));
+                System.out.println(resultSet.getString(2));
+                System.out.println(resultSet.getString(3));
+                System.out.println(resultSet.getString(4));
+                System.out.println(resultSet.getLong(5));
+            }
+            System.out.println(resultSet);
         } catch (SQLException e) {
             System.err.println(e.getMessage());
-            return false;
+            return  false;
         }
         return true;
     }
