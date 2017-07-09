@@ -8,28 +8,8 @@ import java.sql.*;
  * Created by андрей on 04.07.2017.
  */
 public class ConnectionToDb {
+    private Connection connection;
 
-    public static void main(String[] args) {
-        ConnectionToDb db = new ConnectionToDb();
-        if (db.loadDriver()) {
-            Connection connection = db.getConnection();
-            if (!db.executeSQL(connection,"SELECT * FROM RECIPES")) {
-                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/createPatientTable.sql"));
-                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/createDoctorTable.sql"));
-                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/createRecipeTable.sql"));
-                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/alterTableForRecipe.sql"));
-                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/patientSequence.sql"));
-                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/doctorSequence.sql"));
-                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/recipeSequence.sql"));
-                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/insertIntoTables.sql"));
-                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/patientRemoveTrigger.sql"));
-                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/doctorRemoveTrigger.sql"));
-            }
-            db.executeSQL(connection,"DELETE FROM DOCTORS WHERE id = 2");
-            db.closeConnection(connection);
-        }
-
-    }
 
     private boolean loadDriver() {
         try {
@@ -42,7 +22,7 @@ public class ConnectionToDb {
     }
 
     public Connection getConnection() {
-        Connection connection = null;
+        connection = null;
         try {
             connection = DriverManager.getConnection("jdbc:hsqldb:file:testdb", "SA", "");
         } catch (SQLException e) {
@@ -68,7 +48,7 @@ public class ConnectionToDb {
         return sql;
     }
 
-    public void execute(Connection connection, String sql) {
+    public void execute(String sql) {
         try {
             Statement statement = connection.createStatement();
             statement.executeUpdate(sql);
@@ -77,7 +57,7 @@ public class ConnectionToDb {
         }
     }
 
-    public boolean executeSQL(Connection connection, String sql) {
+    public boolean executeSQL(String sql) {
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
@@ -105,4 +85,25 @@ public class ConnectionToDb {
             System.err.println(e.getMessage());
         }
     }
+   /* public static void main(String[] args) {
+        ConnectionToDb db = new ConnectionToDb();
+        if (db.loadDriver()) {
+            Connection connection = db.getConnection();
+            if (!db.executeSQL(connection,"SELECT * FROM RECIPES")) {
+                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/createPatientTable.sql"));
+                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/createDoctorTable.sql"));
+                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/createRecipeTable.sql"));
+                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/alterTableForRecipe.sql"));
+                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/patientSequence.sql"));
+                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/doctorSequence.sql"));
+                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/recipeSequence.sql"));
+                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/insertIntoTables.sql"));
+                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/patientRemoveTrigger.sql"));
+                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/doctorRemoveTrigger.sql"));
+            }
+            db.executeSQL(connection,"DELETE FROM DOCTORS WHERE id = 2");
+            db.closeConnection(connection);
+        }
+
+    }*/
 }
