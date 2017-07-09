@@ -11,6 +11,13 @@ public class Doctor {
     private String secondName;
     private String specialization;
 
+    public Doctor(Long id, String name, String surname, String secondName, String specialization) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.secondName = secondName;
+        this.specialization = specialization;
+    }
 
 
     public Long getId() {
@@ -53,6 +60,8 @@ public class Doctor {
     public void setSpecialization(String specialization) {
         this.specialization = specialization;
     }
+
+
 
     @Override
     public boolean equals(Object o) {

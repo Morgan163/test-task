@@ -21,12 +21,13 @@ public class ConnectionToDb {
         return true;
     }
 
-    public Connection getConnection() {
+    public Connection getConnection() throws SQLException {
         connection = null;
         try {
             connection = DriverManager.getConnection("jdbc:hsqldb:file:testdb", "SA", "");
         } catch (SQLException e) {
             System.err.println(e.getMessage());
+            throw new SQLException();
         }
         return connection;
     }
@@ -57,23 +58,16 @@ public class ConnectionToDb {
         }
     }
 
-    public boolean executeSQL(String sql) {
+    public ResultSet executeSQL(String sql) throws SQLException {
+        ResultSet resultSet;
         try {
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
-            while(resultSet.next()){
-                System.out.println(resultSet.getLong(1));
-                System.out.println(resultSet.getString(2));
-                System.out.println(resultSet.getString(3));
-                System.out.println(resultSet.getString(4));
-                System.out.println(resultSet.getLong(5));
-            }
-            System.out.println(resultSet);
+            resultSet = statement.executeQuery(sql);
+            return  resultSet;
         } catch (SQLException e) {
             System.err.println(e.getMessage());
-            return  false;
+            throw e;
         }
-        return true;
     }
 
     public void closeConnection(Connection connection) {

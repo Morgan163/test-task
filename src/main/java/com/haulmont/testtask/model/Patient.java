@@ -10,7 +10,13 @@ public class Patient {
     private String secondName;
     private Long phoneNumber;
 
-
+    public Patient(long id, String name, String surname, String secondName, Long phoneNumber) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.secondName = secondName;
+        this.phoneNumber = phoneNumber;
+    }
 
     public long getId() {
         return id;
