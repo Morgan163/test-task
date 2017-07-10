@@ -24,10 +24,11 @@ public class RecipeDAOImpl implements RecipeDAO {
 
     @Override
     public void create(Recipe recipe) throws ExecuteSQLException {
-        String sql = "INSERT INTO RECIPES (id, patient_id, doctor_id, date_of_create, validity, priority)\n" +
+        String sql = "INSERT INTO RECIPES (id, description, patient_id, doctor_id, date_of_create, validity, priority)\n" +
                 " VALUES (NEXT VALUE FOR recipeSequence," +
-                " \'" +recipe.getPatientID()+"\',"+
-                " \'"+recipe.getDoctorID()+"\',"+
+                " \'" +recipe.getDescription()+"\',"+
+                " " +recipe.getPatientID()+","+
+                " "+recipe.getDoctorID()+","+
                 " to_date(\'"
                     +recipe.getDateOfCreate().get(Calendar.DAY_OF_MONTH)+ "/"
                     +recipe.getDateOfCreate().get(Calendar.MONTH)+"/"
@@ -44,7 +45,8 @@ public class RecipeDAOImpl implements RecipeDAO {
     @Override
     public void update(Recipe recipe) throws ExecuteSQLException {
         String sql = "UPDATE RECIPES" +
-                " SET patient_id = " + recipe.getPatientID()+
+                " SET description = " +recipe.getDescription()+
+                "patient_id = " + recipe.getPatientID()+
                 " ,doctor_id = "+recipe.getDoctorID()+
                 " ,date_of_create = to_date(\'"
                     +recipe.getDateOfCreate().get(Calendar.DAY_OF_MONTH)+ "/"
@@ -81,13 +83,14 @@ public class RecipeDAOImpl implements RecipeDAO {
         try {
             resultSet = connection.executeSQL(sql);
             GregorianCalendar calendar = null;
-            resultSet.getDate(4,calendar);
+            resultSet.getDate(5,calendar);
             recipe = new Recipe(resultSet.getLong(1),
-                    resultSet.getLong(2),
+                    resultSet.getString(2),
                     resultSet.getLong(3),
+                    resultSet.getLong(4),
                     calendar,
-                    resultSet.getInt(5),
-                    resultSet.getString(6));
+                    resultSet.getInt(6),
+                    resultSet.getString(7));
         } catch (SQLException e) {
             throw new ExecuteSQLException("Ошибка при получении рецепта с id = "+id+" \n"+e.getMessage());
         }
@@ -105,13 +108,14 @@ public class RecipeDAOImpl implements RecipeDAO {
             resultSet = connection.executeSQL(sql);
             while(resultSet.next()) {
                 GregorianCalendar calendar = null;
-                resultSet.getDate(4, calendar);
+                resultSet.getDate(5,calendar);
                 recipe = new Recipe(resultSet.getLong(1),
-                        resultSet.getLong(2),
+                        resultSet.getString(2),
                         resultSet.getLong(3),
+                        resultSet.getLong(4),
                         calendar,
-                        resultSet.getInt(5),
-                        resultSet.getString(6));
+                        resultSet.getInt(6),
+                        resultSet.getString(7));
                 recipes.add(recipe);
             }
         } catch (SQLException e) {

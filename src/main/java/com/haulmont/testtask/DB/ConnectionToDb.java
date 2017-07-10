@@ -79,25 +79,26 @@ public class ConnectionToDb {
             System.err.println(e.getMessage());
         }
     }
-   /* public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         ConnectionToDb db = new ConnectionToDb();
         if (db.loadDriver()) {
             Connection connection = db.getConnection();
-            if (!db.executeSQL(connection,"SELECT * FROM RECIPES")) {
-                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/createPatientTable.sql"));
-                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/createDoctorTable.sql"));
-                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/createRecipeTable.sql"));
-                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/alterTableForRecipe.sql"));
-                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/patientSequence.sql"));
-                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/doctorSequence.sql"));
-                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/recipeSequence.sql"));
-                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/insertIntoTables.sql"));
-                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/patientRemoveTrigger.sql"));
-                db.execute(connection, db.getSqlFromFile("src/main/resources/sql/doctorRemoveTrigger.sql"));
+            try {
+                db.executeSQL("SELECT * FROM RECIPES");
+            }catch (SQLException e){
+                db.execute(db.getSqlFromFile("src/main/resources/sql/createPatientTable.sql"));
+                db.execute(db.getSqlFromFile("src/main/resources/sql/createDoctorTable.sql"));
+                db.execute(db.getSqlFromFile("src/main/resources/sql/createRecipeTable.sql"));
+                db.execute(db.getSqlFromFile("src/main/resources/sql/alterTableForRecipe.sql"));
+                db.execute(db.getSqlFromFile("src/main/resources/sql/patientSequence.sql"));
+                db.execute(db.getSqlFromFile("src/main/resources/sql/doctorSequence.sql"));
+                db.execute(db.getSqlFromFile("src/main/resources/sql/recipeSequence.sql"));
+                db.execute(db.getSqlFromFile("src/main/resources/sql/insertIntoTables.sql"));
+                db.execute(db.getSqlFromFile("src/main/resources/sql/patientRemoveTrigger.sql"));
+                db.execute(db.getSqlFromFile("src/main/resources/sql/doctorRemoveTrigger.sql"));
             }
-            db.executeSQL(connection,"DELETE FROM DOCTORS WHERE id = 2");
             db.closeConnection(connection);
         }
 
-    }*/
+    }
 }
