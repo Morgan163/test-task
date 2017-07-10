@@ -3,6 +3,7 @@ package com.haulmont.testtask.DAO;
 import com.haulmont.testtask.exceptions.ExecuteSQLException;
 import com.haulmont.testtask.model.Doctor;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -15,4 +16,5 @@ public interface DoctorDAO {
     public void delete(Doctor doctor) throws ExecuteSQLException;
     public Doctor read(int id) throws ExecuteSQLException;
     public Set<Doctor> readAll() throws ExecuteSQLException;
+    public Map<Doctor,Integer> getStatistic()throws ExecuteSQLException;
 }

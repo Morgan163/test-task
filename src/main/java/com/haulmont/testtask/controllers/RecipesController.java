@@ -5,10 +5,12 @@ import com.haulmont.testtask.DAO.DAOImpl.DAOAbstractFactoryImpl;
 import com.haulmont.testtask.DAO.RecipeDAO;
 import com.haulmont.testtask.database.ConnectionToDb;
 import com.haulmont.testtask.exceptions.*;
+import com.haulmont.testtask.model.Doctor;
 import com.haulmont.testtask.model.Recipe;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -64,6 +66,19 @@ public class RecipesController extends AbstractController {
         } catch (ExecuteSQLException e) {
             throw  new DataException(e.getMessage());
         }
+    }
+
+    public Set<Recipe> getRecipesAfterFilter(long patientID, String priority,
+                                              String description, Set<Recipe> recipes){
+        Set<Recipe> recipesAfterF = new HashSet<>();
+        for(Recipe recipe:recipes){
+            if((recipe.getPatientID()==patientID)&&
+                    (recipe.getPriority().equals(priority))&&
+                    (recipe.getDescription().equals(description))){
+                recipesAfterF.add(recipe);
+            }
+        }
+        return recipesAfterF;
     }
 
     private void validate(String description, long patientID, long doctorID,

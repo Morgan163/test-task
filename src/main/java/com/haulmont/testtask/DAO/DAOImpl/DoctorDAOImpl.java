@@ -7,7 +7,9 @@ import com.haulmont.testtask.model.Doctor;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -109,5 +111,29 @@ public class DoctorDAOImpl implements DoctorDAO {
             throw new ExecuteSQLException("Ошибка при получении доктора списка докторов\n"+e.getMessage());
         }
         return doctors;
+    }
+
+    public Map<Doctor,Integer> getStatistic() throws ExecuteSQLException {
+        Map<Doctor,Integer> statistic = new HashMap<>();
+        String sql = "SELECT DOCTORS.*, count(RECIPES.id)" +
+                " FROM DOCTORS INNER JOIN RECIPES ON DOCTORS.id = RECIPES.doctor_id" +
+                " GROUP BY DOCTORS.id, DOCTORS.name, DOCTORS.surname," +
+                " DOCTORS.second_name, DOCTORS.specialization;";
+        ResultSet resultSet;
+        try{
+            resultSet = connection.executeSQL(sql);
+            while (resultSet.next()){
+                Doctor doctor = new Doctor(resultSet.getLong(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        resultSet.getString(5));
+                Integer doctorsRecipes = new Integer(resultSet.getInt(6));
+                statistic.put(doctor,doctorsRecipes);
+            }
+            return statistic;
+        } catch (SQLException e) {
+            throw new ExecuteSQLException("Ошибка при получении статистики");
+        }
     }
 }

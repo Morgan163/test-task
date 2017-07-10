@@ -7,6 +7,9 @@ import com.haulmont.testtask.database.ConnectionToDb;
 import com.haulmont.testtask.exceptions.*;
 import com.haulmont.testtask.model.Doctor;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -53,6 +56,14 @@ public class DoctorsController extends AbstractController {
     public Set<Doctor> getDoctors() throws DataException {
         try {
             return doctorDAO.readAll();
+        } catch (ExecuteSQLException e) {
+            throw new DataException(e.getMessage());
+        }
+    }
+
+    public Map<Doctor,Integer> getStatistic() throws DataException {
+        try{
+            return doctorDAO.getStatistic();
         } catch (ExecuteSQLException e) {
             throw new DataException(e.getMessage());
         }
