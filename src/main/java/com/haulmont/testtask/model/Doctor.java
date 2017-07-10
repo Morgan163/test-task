@@ -5,13 +5,13 @@ package com.haulmont.testtask.model;
  */
 public class Doctor {
 
-    private Long id;
+    private long id;
     private String name;
     private String surname;
     private String secondName;
     private String specialization;
 
-    public Doctor(Long id, String name, String surname, String secondName, String specialization) {
+    public Doctor(long id, String name, String surname, String secondName, String specialization) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -20,12 +20,12 @@ public class Doctor {
     }
 
 
-    public Long getId() {
+    public long getId() {
 
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 

@@ -1,4 +1,4 @@
-package com.haulmont.testtask.DB;
+package com.haulmont.testtask.database;
 
 import java.io.*;
 import java.sql.*;

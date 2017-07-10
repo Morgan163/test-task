@@ -6,16 +6,16 @@ import java.util.GregorianCalendar;
  * Created by andrei on 09.07.17.
  */
 public class Recipe {
-    private Long id;
+    private long id;
     private String description;
-    private Long patientID;
-    private Long doctorID;
+    private long patientID;
+    private long doctorID;
     private GregorianCalendar dateOfCreate;
     private int validity;
     private String priority;
 
 
-    public Recipe(Long id, String description, Long patientID, Long doctorID, GregorianCalendar dateOfCreate, int validity, String priority) {
+    public Recipe(long id, String description, long patientID, long doctorID, GregorianCalendar dateOfCreate, int validity, String priority) {
 
         this.id = id;
         this.description = description;
@@ -26,12 +26,12 @@ public class Recipe {
         this.priority = priority;
     }
 
-    public Long getId() {
+    public long getId() {
 
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -43,19 +43,19 @@ public class Recipe {
         this.description = description;
     }
 
-    public Long getPatientID() {
+    public long getPatientID() {
         return patientID;
     }
 
-    public void setPatientID(Long patientID) {
+    public void setPatientID(long patientID) {
         this.patientID = patientID;
     }
 
-    public Long getDoctorID() {
+    public long getDoctorID() {
         return doctorID;
     }
 
-    public void setDoctorID(Long doctorID) {
+    public void setDoctorID(long doctorID) {
         this.doctorID = doctorID;
     }
 
@@ -83,7 +83,6 @@ public class Recipe {
         this.priority = priority;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -91,10 +90,10 @@ public class Recipe {
 
         Recipe recipe = (Recipe) o;
 
+        if (patientID != recipe.patientID) return false;
+        if (doctorID != recipe.doctorID) return false;
         if (validity != recipe.validity) return false;
         if (!description.equals(recipe.description)) return false;
-        if (!patientID.equals(recipe.patientID)) return false;
-        if (!doctorID.equals(recipe.doctorID)) return false;
         if (!dateOfCreate.equals(recipe.dateOfCreate)) return false;
         return priority.equals(recipe.priority);
     }
@@ -102,12 +101,11 @@ public class Recipe {
     @Override
     public int hashCode() {
         int result = description.hashCode();
-        result = 31 * result + patientID.hashCode();
-        result = 31 * result + doctorID.hashCode();
+        result = 31 * result + (int) (patientID ^ (patientID >>> 32));
+        result = 31 * result + (int) (doctorID ^ (doctorID >>> 32));
         result = 31 * result + dateOfCreate.hashCode();
         result = 31 * result + validity;
         result = 31 * result + priority.hashCode();
         return result;
     }
-
 }

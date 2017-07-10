@@ -1,4 +1,4 @@
-package com.haulmont.testtask.Exceptions;
+package com.haulmont.testtask.exceptions;
 
 /**
  * Created by andrei on 09.07.17.

@@ -1,8 +1,8 @@
 package com.haulmont.testtask.DAO.DAOImpl;
 
 import com.haulmont.testtask.DAO.RecipeDAO;
-import com.haulmont.testtask.DB.ConnectionToDb;
-import com.haulmont.testtask.Exceptions.ExecuteSQLException;
+import com.haulmont.testtask.database.ConnectionToDb;
+import com.haulmont.testtask.exceptions.ExecuteSQLException;
 import com.haulmont.testtask.model.Recipe;
 
 import java.sql.ResultSet;

@@ -4,7 +4,7 @@ import com.haulmont.testtask.DAO.DAOAbstractFactory;
 import com.haulmont.testtask.DAO.DoctorDAO;
 import com.haulmont.testtask.DAO.PatientDAO;
 import com.haulmont.testtask.DAO.RecipeDAO;
-import com.haulmont.testtask.DB.ConnectionToDb;
+import com.haulmont.testtask.database.ConnectionToDb;
 
 /**
  * Created by andrei on 09.07.17.

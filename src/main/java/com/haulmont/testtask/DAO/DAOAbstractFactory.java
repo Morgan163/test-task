@@ -1,6 +1,6 @@
 package com.haulmont.testtask.DAO;
 
-import com.haulmont.testtask.DB.ConnectionToDb;
+import com.haulmont.testtask.database.ConnectionToDb;
 
 /**
  * Created by andrei on 09.07.17.

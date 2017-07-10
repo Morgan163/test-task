@@ -1,6 +1,6 @@
 package com.haulmont.testtask.DAO;
 
-import com.haulmont.testtask.Exceptions.ExecuteSQLException;
+import com.haulmont.testtask.exceptions.ExecuteSQLException;
 import com.haulmont.testtask.model.Doctor;
 
 import java.util.Set;

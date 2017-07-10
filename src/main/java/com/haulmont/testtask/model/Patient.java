@@ -8,9 +8,9 @@ public class Patient {
     private String name;
     private String surname;
     private String secondName;
-    private Long phoneNumber;
+    private long phoneNumber;
 
-    public Patient(long id, String name, String surname, String secondName, Long phoneNumber) {
+    public Patient(long id, String name, String surname, String secondName, long phoneNumber) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -50,11 +50,11 @@ public class Patient {
         this.secondName = secondName;
     }
 
-    public Long getPhoneNumber() {
+    public long getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(Long phoneNumber) {
+    public void setPhoneNumber(long phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
@@ -65,11 +65,10 @@ public class Patient {
 
         Patient patient = (Patient) o;
 
+        if (phoneNumber != patient.phoneNumber) return false;
         if (!name.equals(patient.name)) return false;
         if (!surname.equals(patient.surname)) return false;
-        if (!secondName.equals(patient.secondName)) return false;
-        return phoneNumber.equals(patient.phoneNumber);
-
+        return secondName.equals(patient.secondName);
     }
 
     @Override
@@ -77,7 +76,7 @@ public class Patient {
         int result = name.hashCode();
         result = 31 * result + surname.hashCode();
         result = 31 * result + secondName.hashCode();
-        result = 31 * result + phoneNumber.hashCode();
+        result = 31 * result + (int) (phoneNumber ^ (phoneNumber >>> 32));
         return result;
     }
 }
