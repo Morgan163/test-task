@@ -7,6 +7,8 @@ import com.haulmont.testtask.database.ConnectionToDb;
 import com.haulmont.testtask.exceptions.*;
 import com.haulmont.testtask.model.Doctor;
 
+import java.util.Set;
+
 /**
  * Created by anlu0816 on 7/10/2017.
  */
@@ -23,10 +25,10 @@ public class DoctorsController extends AbstractController {
         doctorDAO = daoAbstractFactory.getDoctorDAO(connectionToDb);
     }
 
-    public void addDoctor(String name, String surname, String secondName, String specialization) throws AddDataException {
+    public long addDoctor(String name, String surname, String secondName, String specialization) throws AddDataException {
         try {
             validate(name,surname,secondName,specialization);
-            doctorDAO.create(new Doctor(FAKE_ID,name,surname,secondName,specialization));
+            return doctorDAO.create(new Doctor(FAKE_ID,name,surname,secondName,specialization));
         } catch (ExecuteSQLException | DataException e) {
             throw new AddDataException(e.getMessage());
         }
@@ -45,6 +47,14 @@ public class DoctorsController extends AbstractController {
             doctorDAO.delete(doctor);
         } catch (ExecuteSQLException e) {
             throw new DeleteDataException(e.getMessage());
+        }
+    }
+
+    public Set<Doctor> getDoctors() throws DataException {
+        try {
+            return doctorDAO.readAll();
+        } catch (ExecuteSQLException e) {
+            throw new DataException(e.getMessage());
         }
     }
 

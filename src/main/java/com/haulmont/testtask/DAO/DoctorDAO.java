@@ -10,7 +10,7 @@ import java.util.Set;
  */
 public interface DoctorDAO {
 
-    public void create(Doctor doctor) throws ExecuteSQLException;
+    public long create(Doctor doctor) throws ExecuteSQLException;
     public void update(Doctor doctor) throws ExecuteSQLException;
     public void delete(Doctor doctor) throws ExecuteSQLException;
     public Doctor read(int id) throws ExecuteSQLException;

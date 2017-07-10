@@ -11,6 +11,8 @@ public abstract class AbstractController {
     public static final int SECOND_NAME_LIMIT = 30;
     public static final long  FAKE_ID= 0;
 
+
+
     protected void validateString(String str, int limit, String strName) throws DataException {
         if(str!=null){
             if("".equals(str)){

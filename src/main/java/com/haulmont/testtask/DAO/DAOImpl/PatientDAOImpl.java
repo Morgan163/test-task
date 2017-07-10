@@ -21,7 +21,7 @@ public class PatientDAOImpl implements PatientDAO {
     }
 
     @Override
-    public void create(Patient patient) throws ExecuteSQLException {
+    public long create(Patient patient) throws ExecuteSQLException {
         String sql = "INSERT INTO PATIENTS(id, name, surname, second_name, phone_number)\n" +
                 " VALUES (NEXT VALUE FOR patientSequence," +
                 " \'" +patient.getName()+"\',"+
@@ -30,6 +30,14 @@ public class PatientDAOImpl implements PatientDAO {
                 " "+patient.getPhoneNumber()+";";
         try {
             connection.executeSQL(sql);
+            sql = "SELECT id" +
+                    " FROM PATIENTS" +
+                    " WHERE name = "+patient.getName()+
+                    " AND surname = "+patient.getSurname()+
+                    " AND second_name = "+patient.getSecondName()+
+                    " AND phone_number = "+patient.getPhoneNumber();
+            ResultSet resultSet = connection.executeSQL(sql);
+            return  resultSet.getLong(1);
         } catch (SQLException e) {
             throw new ExecuteSQLException("Ошибка при добавлении записи \n"+e.getMessage());
         }

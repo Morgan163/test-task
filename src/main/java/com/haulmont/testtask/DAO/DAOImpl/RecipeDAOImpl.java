@@ -23,7 +23,7 @@ public class RecipeDAOImpl implements RecipeDAO {
     }
 
     @Override
-    public void create(Recipe recipe) throws ExecuteSQLException {
+    public long create(Recipe recipe) throws ExecuteSQLException {
         String sql = "INSERT INTO RECIPES (id, description, patient_id, doctor_id, date_of_create, validity, priority)\n" +
                 " VALUES (NEXT VALUE FOR recipeSequence," +
                 " \'" +recipe.getDescription()+"\',"+
@@ -37,6 +37,19 @@ public class RecipeDAOImpl implements RecipeDAO {
                 " \'"+recipe.getPriority()+"\';";
         try {
             connection.executeSQL(sql);
+            sql = "SELECT id" +
+                    " FROM RECIPES" +
+                    " WHERE description = " +recipe.getDescription()+
+                    " AND patient_id = " + recipe.getPatientID()+
+                    " AND doctor_id = "+recipe.getDoctorID()+
+                    " AND date_of_create = to_date(\'"
+                    +recipe.getDateOfCreate().get(Calendar.DAY_OF_MONTH)+ "/"
+                    +recipe.getDateOfCreate().get(Calendar.MONTH)+"/"
+                    +recipe.getDateOfCreate().get(Calendar.YEAR)+"\', 'DD/MM/YYYY'),"+
+                    " AND validity = "+recipe.getValidity()+
+                    " AND priority = "+recipe.getPriority();
+            ResultSet resultSet = connection.executeSQL(sql);
+            return  resultSet.getLong(1);
         } catch (SQLException e) {
             throw new ExecuteSQLException("Ошибка при добавлении записи \n"+e.getMessage());
         }
@@ -46,7 +59,7 @@ public class RecipeDAOImpl implements RecipeDAO {
     public void update(Recipe recipe) throws ExecuteSQLException {
         String sql = "UPDATE RECIPES" +
                 " SET description = " +recipe.getDescription()+
-                "patient_id = " + recipe.getPatientID()+
+                " ,patient_id = " + recipe.getPatientID()+
                 " ,doctor_id = "+recipe.getDoctorID()+
                 " ,date_of_create = to_date(\'"
                     +recipe.getDateOfCreate().get(Calendar.DAY_OF_MONTH)+ "/"

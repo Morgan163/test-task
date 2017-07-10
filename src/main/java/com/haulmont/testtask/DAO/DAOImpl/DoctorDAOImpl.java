@@ -21,7 +21,7 @@ public class DoctorDAOImpl implements DoctorDAO {
     }
 
     @Override
-    public void create(Doctor doctor) throws ExecuteSQLException {
+    public long create(Doctor doctor) throws ExecuteSQLException {
         String sql = "INSERT INTO DOCTORS (id, name, surname, second_name, specialization)" +
                 " VALUES (NEXT VALUE FOR doctorSequence," +
                 " \'" +doctor.getName()+"\',"+
@@ -30,6 +30,14 @@ public class DoctorDAOImpl implements DoctorDAO {
                 " \'"+doctor.getSpecialization()+"\';";
         try {
             connection.executeSQL(sql);
+            sql = "SELECT id" +
+                    " FROM DOCTORS" +
+                    " WHERE name = "+doctor.getName()+
+                    " AND surname = "+doctor.getSurname()+
+                    " AND second_name = "+doctor.getSecondName()+
+                    " AND specialization = "+doctor.getSpecialization();
+            ResultSet resultSet = connection.executeSQL(sql);
+            return  resultSet.getLong(1);
         } catch (SQLException e) {
             throw new ExecuteSQLException("Ошибка при добавлении записи \n"+e.getMessage());
         }

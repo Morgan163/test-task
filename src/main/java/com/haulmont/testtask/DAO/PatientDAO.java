@@ -9,7 +9,7 @@ import java.util.Set;
  * Created by andrei on 09.07.17.
  */
 public interface PatientDAO {
-    public void create(Patient patient) throws ExecuteSQLException;
+    public long create(Patient patient) throws ExecuteSQLException;
     public void update(Patient patient) throws ExecuteSQLException;
     public void delete(Patient patient) throws ExecuteSQLException;
     public Patient read(int id) throws ExecuteSQLException;
