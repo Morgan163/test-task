@@ -79,13 +79,13 @@ public class MainUI extends UI {
 
         doctorsGrid.setColumns("surname","name","secondName","specialization");
         patientGrid.setColumns("surname","name","secondName","phoneNumber");
-        recipeGrid.setColumns("description","patient_id","doctor_id","date_of_create","validity","priority");
+        recipeGrid.setColumns("description","patientID","doctorID","dateOfCreate","validity","priority");
 
         setContent(tabLayout);
 
         updateDoctors();
         updatePatients();
-        //updateRecipes();
+        updateRecipes();
 
     }
 

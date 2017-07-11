@@ -120,8 +120,8 @@ public class RecipeDAOImpl implements RecipeDAO {
         try {
             resultSet = connection.executeSQL(sql);
             while(resultSet.next()) {
-                GregorianCalendar calendar = null;
-                resultSet.getDate(5,calendar);
+                GregorianCalendar calendar = new GregorianCalendar();
+                calendar.setTime(resultSet.getDate(5));
                 recipe = new Recipe(resultSet.getLong(1),
                         resultSet.getString(2),
                         resultSet.getLong(3),

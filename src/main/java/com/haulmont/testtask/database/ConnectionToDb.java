@@ -1,5 +1,8 @@
 package com.haulmont.testtask.database;
 
+import com.haulmont.testtask.controllers.RecipesController;
+import com.haulmont.testtask.exceptions.DataException;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -87,9 +90,11 @@ public class ConnectionToDb {
         }
     }
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, DataException {
         ConnectionToDb db = new ConnectionToDb();
-        if (db.loadDriver()) {
+        RecipesController recipesController = new RecipesController(db);
+        recipesController.getRecipes();
+       /* if (db.loadDriver()) {
             Connection connection = db.getConnection();
             try {
                 db.executeSQL("SELECT * FROM RECIPES");
@@ -106,7 +111,7 @@ public class ConnectionToDb {
                 db.execute(db.getSqlFromFile("src/main/resources/sql/doctorRemoveTrigger.sql"));
             }
             db.closeConnection(connection);
-        }
+        }*/
 
     }
 }
