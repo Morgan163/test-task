@@ -1,6 +1,9 @@
 package com.haulmont.testtask.database;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.*;
 
 
@@ -10,6 +13,10 @@ import java.sql.*;
 public class ConnectionToDb {
     private Connection connection;
 
+    public ConnectionToDb() throws SQLException {
+        loadDriver();
+        getConnection();
+    }
 
     private boolean loadDriver() {
         try {
@@ -63,7 +70,7 @@ public class ConnectionToDb {
         try {
             Statement statement = connection.createStatement();
             resultSet = statement.executeQuery(sql);
-            return  resultSet;
+            return resultSet;
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             throw e;
@@ -79,13 +86,14 @@ public class ConnectionToDb {
             System.err.println(e.getMessage());
         }
     }
+
     public static void main(String[] args) throws SQLException {
         ConnectionToDb db = new ConnectionToDb();
         if (db.loadDriver()) {
             Connection connection = db.getConnection();
             try {
                 db.executeSQL("SELECT * FROM RECIPES");
-            }catch (SQLException e){
+            } catch (SQLException e) {
                 db.execute(db.getSqlFromFile("src/main/resources/sql/createPatientTable.sql"));
                 db.execute(db.getSqlFromFile("src/main/resources/sql/createDoctorTable.sql"));
                 db.execute(db.getSqlFromFile("src/main/resources/sql/createRecipeTable.sql"));
