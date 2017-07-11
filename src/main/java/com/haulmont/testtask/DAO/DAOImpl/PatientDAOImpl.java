@@ -73,7 +73,7 @@ public class PatientDAOImpl implements PatientDAO {
     public Patient read(int id) throws ExecuteSQLException {
         Patient patient = null;
         String sql = "SELECT *" +
-                " FROM PATIENT" +
+                " FROM PATIENTS" +
                 " WHERE id = "+id;
         ResultSet resultSet;
         try {
@@ -94,7 +94,7 @@ public class PatientDAOImpl implements PatientDAO {
         Set<Patient> patients = new HashSet<>();
         Patient patient = null;
         String sql = "SELECT *" +
-                " FROM PATIENT";
+                " FROM PATIENTS";
         ResultSet resultSet;
         try {
             resultSet = connection.executeSQL(sql);
