@@ -11,12 +11,10 @@ import com.haulmont.testtask.model.Recipe;
 import com.vaadin.annotations.Theme;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 
+import java.awt.*;
 import java.sql.SQLException;
 import java.util.Set;
 
@@ -27,6 +25,8 @@ public class MainUI extends UI {
     private DoctorsController doctorsController;
     private PatientsController patientsController;
     private RecipesController recipesController;
+
+    private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
     private final Grid doctorsGrid;
     private final Grid patientGrid;
@@ -46,6 +46,8 @@ public class MainUI extends UI {
         recipeGrid = new Grid();
 
         tabSheet = new TabSheet();
+
+
     }
 
     @Override
@@ -57,6 +59,8 @@ public class MainUI extends UI {
         final VerticalLayout patientLayout = new VerticalLayout();
         final VerticalLayout recipeLayout = new VerticalLayout();
 
+
+
         doctorLayout.setSizeFull();
         patientLayout.setSizeFull();
         recipeLayout.setSizeFull();
@@ -65,6 +69,9 @@ public class MainUI extends UI {
         doctorLayout.setMargin(true);
         patientLayout.setMargin(true);
         recipeLayout.setMargin(true);
+
+        recipeGrid.setWidth("1200px");
+
 
         doctorLayout.addComponent(doctorsGrid);
         patientLayout.addComponent(patientGrid);
@@ -78,10 +85,20 @@ public class MainUI extends UI {
         tabSheet.addTab(recipeLayout,"Recipes");
 
         doctorsGrid.setColumns("surname","name","secondName","specialization");
+        doctorsGrid.getColumn("surname").setHeaderCaption("Фамилия");
+        doctorsGrid.getColumn("name").setHeaderCaption("Имя");
+        doctorsGrid.getColumn("secondName").setHeaderCaption("Отчество");
+        doctorsGrid.getColumn("specialization").setHeaderCaption("Специализация");
+
         patientGrid.setColumns("surname","name","secondName","phoneNumber");
+        patientGrid.getColumn("surname").setHeaderCaption("Фамилия");
+        patientGrid.getColumn("name").setHeaderCaption("Имя");
+        patientGrid.getColumn("secondName").setHeaderCaption("Отчество");
+        patientGrid.getColumn("phoneNumber").setHeaderCaption("Номер телефона");
 
-        recipeGrid.setColumns("description","patientID","doctorID","dateOfCreate","validity","priority");
-
+        recipeGrid.setColumns("patient.surname","patient.name","patient.secondName",
+                "doctor.surname","doctor.name","doctor.secondName","description","dateOfCreate","validity","priority");
+        recipeGrid.getColumn("description").setMaximumWidth(100);
         setContent(tabLayout);
 
         updateDoctors();
@@ -93,8 +110,10 @@ public class MainUI extends UI {
     private void updateDoctors() {
 
         Set<Doctor> doctors = null;
+
         try {
             doctors = doctorsController.getDoctors();
+            ;
         } catch (DataException e) {
             e.printStackTrace();
         }
@@ -111,13 +130,16 @@ public class MainUI extends UI {
         patientGrid.setContainerDataSource(new BeanItemContainer<>(Patient.class,patients));
     }
 
-    private void updateRecipes(){
+    private void updateRecipes() {
         Set<Recipe> recipes = null;
         try {
             recipes = recipesController.getRecipes();
+            final BeanItemContainer<Recipe> beanItemContainer = new BeanItemContainer<Recipe>(Recipe.class, recipes);
+            beanItemContainer.addNestedContainerBean("patient");
+            beanItemContainer.addNestedContainerBean("doctor");
+            recipeGrid.setContainerDataSource(beanItemContainer);
         } catch (DataException e) {
             e.printStackTrace();
         }
-        recipeGrid.setContainerDataSource(new BeanItemContainer<>(Recipe.class,recipes));
     }
 }

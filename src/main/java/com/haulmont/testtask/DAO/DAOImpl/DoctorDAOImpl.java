@@ -80,11 +80,13 @@ public class DoctorDAOImpl implements DoctorDAO {
         ResultSet resultSet;
         try {
             resultSet = connection.executeSQL(sql);
-            doctor = new Doctor(resultSet.getLong(1),
-                    resultSet.getString(2),
-                    resultSet.getString(3),
-                    resultSet.getString(4),
-                    resultSet.getString(5));
+            while(resultSet.next()) {
+                doctor = new Doctor(resultSet.getLong(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        resultSet.getString(5));
+            }
         } catch (SQLException e) {
             throw new ExecuteSQLException("Ошибка при получении доктора с id = "+id+" \n"+e.getMessage());
         }

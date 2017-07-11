@@ -78,11 +78,13 @@ public class PatientDAOImpl implements PatientDAO {
         ResultSet resultSet;
         try {
             resultSet = connection.executeSQL(sql);
-            patient = new Patient(resultSet.getLong(1),
-                    resultSet.getString(2),
-                    resultSet.getString(3),
-                    resultSet.getString(4),
-                    resultSet.getLong(5));
+            while (resultSet.next()) {
+                patient = new Patient(resultSet.getLong(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        resultSet.getLong(5));
+            }
         } catch (SQLException e) {
             throw new ExecuteSQLException("Ошибка при получении пациента с id = "+id+" \n"+e.getMessage());
         }
