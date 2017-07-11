@@ -14,7 +14,7 @@ public interface DoctorDAO {
     public long create(Doctor doctor) throws ExecuteSQLException;
     public void update(Doctor doctor) throws ExecuteSQLException;
     public void delete(Doctor doctor) throws ExecuteSQLException;
-    public Doctor read(int id) throws ExecuteSQLException;
+    public Doctor read(long id) throws ExecuteSQLException;
     public Set<Doctor> readAll() throws ExecuteSQLException;
     public Map<Doctor,Integer> getStatistic()throws ExecuteSQLException;
 }

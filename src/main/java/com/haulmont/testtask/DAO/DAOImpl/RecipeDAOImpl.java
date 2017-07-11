@@ -1,8 +1,12 @@
 package com.haulmont.testtask.DAO.DAOImpl;
 
+import com.haulmont.testtask.DAO.DAOAbstractFactory;
+import com.haulmont.testtask.DAO.DoctorDAO;
+import com.haulmont.testtask.DAO.PatientDAO;
 import com.haulmont.testtask.DAO.RecipeDAO;
 import com.haulmont.testtask.database.ConnectionToDb;
 import com.haulmont.testtask.exceptions.ExecuteSQLException;
+import com.haulmont.testtask.model.Patient;
 import com.haulmont.testtask.model.Recipe;
 
 import java.sql.ResultSet;
@@ -17,9 +21,15 @@ import java.util.Set;
  */
 public class RecipeDAOImpl implements RecipeDAO {
     private ConnectionToDb connection;
+    private DoctorDAO doctorDAO;
+    private PatientDAO patientDAO;
+    private DAOAbstractFactory daoAbstractFactory;
 
     public RecipeDAOImpl(ConnectionToDb connection) {
         this.connection = connection;
+        daoAbstractFactory = new DAOAbstractFactoryImpl();
+        doctorDAO = daoAbstractFactory.getDoctorDAO(connection);
+        patientDAO = daoAbstractFactory.getPatientDAO(connection);
     }
 
     @Override
@@ -27,8 +37,8 @@ public class RecipeDAOImpl implements RecipeDAO {
         String sql = "INSERT INTO RECIPES (id, description, patient_id, doctor_id, date_of_create, validity, priority)\n" +
                 " VALUES (NEXT VALUE FOR recipeSequence," +
                 " \'" +recipe.getDescription()+"\',"+
-                " " +recipe.getPatientID()+","+
-                " "+recipe.getDoctorID()+","+
+                " " +recipe.getPatient()+","+
+                " "+recipe.getDoctor()+","+
                 " to_date(\'"
                     +recipe.getDateOfCreate().get(Calendar.DAY_OF_MONTH)+ "/"
                     +recipe.getDateOfCreate().get(Calendar.MONTH)+"/"
@@ -40,8 +50,8 @@ public class RecipeDAOImpl implements RecipeDAO {
             sql = "SELECT id" +
                     " FROM RECIPES" +
                     " WHERE description = " +recipe.getDescription()+
-                    " AND patient_id = " + recipe.getPatientID()+
-                    " AND doctor_id = "+recipe.getDoctorID()+
+                    " AND patient_id = " + recipe.getPatient()+
+                    " AND doctor_id = "+recipe.getDoctor()+
                     " AND date_of_create = to_date(\'"
                     +recipe.getDateOfCreate().get(Calendar.DAY_OF_MONTH)+ "/"
                     +recipe.getDateOfCreate().get(Calendar.MONTH)+"/"
@@ -59,8 +69,8 @@ public class RecipeDAOImpl implements RecipeDAO {
     public void update(Recipe recipe) throws ExecuteSQLException {
         String sql = "UPDATE RECIPES" +
                 " SET description = " +recipe.getDescription()+
-                " ,patient_id = " + recipe.getPatientID()+
-                " ,doctor_id = "+recipe.getDoctorID()+
+                " ,patient_id = " + recipe.getPatient()+
+                " ,doctor_id = "+recipe.getDoctor()+
                 " ,date_of_create = to_date(\'"
                     +recipe.getDateOfCreate().get(Calendar.DAY_OF_MONTH)+ "/"
                     +recipe.getDateOfCreate().get(Calendar.MONTH)+"/"
@@ -99,8 +109,8 @@ public class RecipeDAOImpl implements RecipeDAO {
             resultSet.getDate(5,calendar);
             recipe = new Recipe(resultSet.getLong(1),
                     resultSet.getString(2),
-                    resultSet.getLong(3),
-                    resultSet.getLong(4),
+                    patientDAO.read(resultSet.getLong(3)),
+                    doctorDAO.read(resultSet.getLong(4)),
                     calendar,
                     resultSet.getInt(6),
                     resultSet.getString(7));
@@ -124,8 +134,8 @@ public class RecipeDAOImpl implements RecipeDAO {
                 calendar.setTime(resultSet.getDate(5));
                 recipe = new Recipe(resultSet.getLong(1),
                         resultSet.getString(2),
-                        resultSet.getLong(3),
-                        resultSet.getLong(4),
+                        patientDAO.read(resultSet.getLong(3)),
+                        doctorDAO.read(resultSet.getLong(4)),
                         calendar,
                         resultSet.getInt(6),
                         resultSet.getString(7));

@@ -5,6 +5,8 @@ import com.haulmont.testtask.DAO.DAOImpl.DAOAbstractFactoryImpl;
 import com.haulmont.testtask.DAO.RecipeDAO;
 import com.haulmont.testtask.database.ConnectionToDb;
 import com.haulmont.testtask.exceptions.*;
+import com.haulmont.testtask.model.Doctor;
+import com.haulmont.testtask.model.Patient;
 import com.haulmont.testtask.model.Recipe;
 
 import java.util.Calendar;
@@ -29,22 +31,22 @@ public class RecipesController extends AbstractController {
         recipeDAO = daoAbstractFactory.getRecipeDAO(connectionToDb);
     }
 
-    public long addRecipe(String description, long patientID, long doctorID,
+    public long addRecipe(String description, Patient patient, Doctor doctor,
                           GregorianCalendar dateOfCreate, int validity, String priority) throws AddDataException {
         try {
-            validate(description,patientID,doctorID,dateOfCreate,validity,priority);
-            return recipeDAO.create(new Recipe(FAKE_ID,description,patientID,doctorID,dateOfCreate,
+            validate(description,patient,doctor,dateOfCreate,validity,priority);
+            return recipeDAO.create(new Recipe(FAKE_ID,description,patient,doctor,dateOfCreate,
                     validity,priority));
         } catch (ExecuteSQLException | DataException e) {
             throw new AddDataException(e.getMessage());
         }
     }
 
-    public void changeRecipe(String description, long patientID, long doctorID,
+    public void changeRecipe(String description, Patient patient, Doctor doctor,
                              GregorianCalendar dateOfCreate, int validity, String priority) throws ChangeDataException {
         try {
-            validate(description,patientID,doctorID,dateOfCreate,validity,priority);
-            recipeDAO.update(new Recipe(FAKE_ID,description,patientID,doctorID,dateOfCreate,
+            validate(description,patient,doctor,dateOfCreate,validity,priority);
+            recipeDAO.update(new Recipe(FAKE_ID,description,patient,doctor,dateOfCreate,
                     validity,priority));
         } catch (ExecuteSQLException | DataException e) {
             throw new ChangeDataException(e.getMessage());
@@ -72,7 +74,7 @@ public class RecipesController extends AbstractController {
         Set<Recipe> recipesAfterF = new HashSet<>();
         boolean filter = true;
         for(Recipe recipe:recipes){
-            if((patientID!=0)&&(recipe.getPatientID()!=patientID)){
+            if((patientID!=0)&&(recipe.getPatient().getId()!=patientID)){
                 filter = false;
             }
             if((!"".equals(priority))&&(!recipe.getPriority().equals(priority))){
@@ -89,13 +91,13 @@ public class RecipesController extends AbstractController {
         return recipesAfterF;
     }
 
-    private void validate(String description, long patientID, long doctorID,
+    private void validate(String description, Patient patient, Doctor doctor,
                           GregorianCalendar dateOfCreate, int validity, String priority) throws DataException {
         validateString(description,DESCRIPTION_LIMIT,"ОПИСАНИЕ");
-        if(patientID==0){
+        if(patient==null){
             throw new DataException("ПАЦИЕНТ не выбран");
         }
-        if(doctorID==0){
+        if(doctor==null){
             throw  new DataException("ДОКТОР не выбран");
         }
         Calendar today = GregorianCalendar.getInstance();

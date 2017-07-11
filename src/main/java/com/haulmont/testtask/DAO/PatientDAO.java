@@ -12,6 +12,6 @@ public interface PatientDAO {
     public long create(Patient patient) throws ExecuteSQLException;
     public void update(Patient patient) throws ExecuteSQLException;
     public void delete(Patient patient) throws ExecuteSQLException;
-    public Patient read(int id) throws ExecuteSQLException;
+    public Patient read(long id) throws ExecuteSQLException;
     public Set<Patient> readAll() throws ExecuteSQLException;
 }

@@ -70,7 +70,7 @@ public class PatientDAOImpl implements PatientDAO {
     }
 
     @Override
-    public Patient read(int id) throws ExecuteSQLException {
+    public Patient read(long id) throws ExecuteSQLException {
         Patient patient = null;
         String sql = "SELECT *" +
                 " FROM PATIENTS" +

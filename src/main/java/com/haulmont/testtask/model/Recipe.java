@@ -8,19 +8,19 @@ import java.util.GregorianCalendar;
 public class Recipe {
     private long id;
     private String description;
-    private long patientID;
-    private long doctorID;
+    private Patient patient;
+    private Doctor doctor;
     private GregorianCalendar dateOfCreate;
     private int validity;
     private String priority;
 
 
-    public Recipe(long id, String description, long patientID, long doctorID, GregorianCalendar dateOfCreate, int validity, String priority) {
+    public Recipe(long id, String description, Patient patient, Doctor doctor, GregorianCalendar dateOfCreate, int validity, String priority) {
 
         this.id = id;
         this.description = description;
-        this.patientID = patientID;
-        this.doctorID = doctorID;
+        this.patient = patient;
+        this.doctor = doctor;
         this.dateOfCreate = dateOfCreate;
         this.validity = validity;
         this.priority = priority;
@@ -43,20 +43,20 @@ public class Recipe {
         this.description = description;
     }
 
-    public long getPatientID() {
-        return patientID;
+    public Patient getPatient() {
+        return patient;
     }
 
-    public void setPatientID(long patientID) {
-        this.patientID = patientID;
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 
-    public long getDoctorID() {
-        return doctorID;
+    public Doctor getDoctor() {
+        return doctor;
     }
 
-    public void setDoctorID(long doctorID) {
-        this.doctorID = doctorID;
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
     }
 
     public GregorianCalendar getDateOfCreate() {
@@ -90,19 +90,20 @@ public class Recipe {
 
         Recipe recipe = (Recipe) o;
 
-        if (patientID != recipe.patientID) return false;
-        if (doctorID != recipe.doctorID) return false;
         if (validity != recipe.validity) return false;
         if (!description.equals(recipe.description)) return false;
+        if (!patient.equals(recipe.patient)) return false;
+        if (!doctor.equals(recipe.doctor)) return false;
         if (!dateOfCreate.equals(recipe.dateOfCreate)) return false;
         return priority.equals(recipe.priority);
+
     }
 
     @Override
     public int hashCode() {
         int result = description.hashCode();
-        result = 31 * result + (int) (patientID ^ (patientID >>> 32));
-        result = 31 * result + (int) (doctorID ^ (doctorID >>> 32));
+        result = 31 * result + patient.hashCode();
+        result = 31 * result + doctor.hashCode();
         result = 31 * result + dateOfCreate.hashCode();
         result = 31 * result + validity;
         result = 31 * result + priority.hashCode();
