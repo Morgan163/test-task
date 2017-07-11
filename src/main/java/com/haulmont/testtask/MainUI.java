@@ -79,6 +79,7 @@ public class MainUI extends UI {
 
         doctorsGrid.setColumns("surname","name","secondName","specialization");
         patientGrid.setColumns("surname","name","secondName","phoneNumber");
+
         recipeGrid.setColumns("description","patientID","doctorID","dateOfCreate","validity","priority");
 
         setContent(tabLayout);

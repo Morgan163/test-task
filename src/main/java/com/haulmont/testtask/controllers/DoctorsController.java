@@ -22,6 +22,8 @@ public class DoctorsController extends AbstractController {
     private DAOAbstractFactory daoAbstractFactory;
     private DoctorDAO doctorDAO;
 
+    private Map<Long,Doctor> doctorMap;
+
     public DoctorsController(ConnectionToDb connectionToDb) {
         this.connectionToDb = connectionToDb;
         daoAbstractFactory = new DAOAbstractFactoryImpl();
@@ -55,7 +57,14 @@ public class DoctorsController extends AbstractController {
 
     public Set<Doctor> getDoctors() throws DataException {
         try {
-            return doctorDAO.readAll();
+            if(doctorMap==null){
+                doctorMap = new HashMap<>();
+            }
+            Set<Doctor> doctors = doctorDAO.readAll();
+            for (Doctor doctor:doctors){
+                doctorMap.put(doctor.getId(),doctor);
+            }
+            return doctors;
         } catch (ExecuteSQLException e) {
             throw new DataException(e.getMessage());
         }
@@ -67,6 +76,13 @@ public class DoctorsController extends AbstractController {
         } catch (ExecuteSQLException e) {
             throw new DataException(e.getMessage());
         }
+    }
+
+    public Doctor getDoctorById(long id) throws DataException {
+        if(doctorMap==null){
+            getDoctors();
+        }
+        return doctorMap.get(id);
     }
 
     

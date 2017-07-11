@@ -7,6 +7,8 @@ import com.haulmont.testtask.database.ConnectionToDb;
 import com.haulmont.testtask.exceptions.*;
 import com.haulmont.testtask.model.Patient;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -17,6 +19,8 @@ public class PatientsController extends AbstractController {
     private ConnectionToDb connectionToDb;
     private DAOAbstractFactory daoAbstractFactory;
     private PatientDAO patientDAO;
+
+    private Map<Long,Patient> patientMap;
 
     public PatientsController(ConnectionToDb connectionToDb) {
         this.connectionToDb = connectionToDb;
@@ -52,10 +56,24 @@ public class PatientsController extends AbstractController {
 
     public Set<Patient> getPatients() throws DataException {
         try{
-            return patientDAO.readAll();
+            if(patientMap == null){
+                patientMap = new HashMap<>();
+            }
+            Set<Patient> patients = patientDAO.readAll();
+            for(Patient patient:patients){
+                patientMap.put(patient.getId(),patient);
+            }
+            return patients;
         }catch (ExecuteSQLException e){
             throw new DataException(e.getMessage());
         }
+    }
+
+    public Patient getPatientById(long id) throws DataException {
+        if(patientMap==null){
+            getPatients();
+        }
+        return patientMap.get(id);
     }
 
     private void validate(String name, String surname, String secondName, long phoneNumber) throws DataException {
