@@ -14,10 +14,8 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 
 import java.awt.*;
@@ -47,6 +45,8 @@ public class MainUI extends UI {
         patientsController = new PatientsController(connectionToDb);
         recipesController = new RecipesController(connectionToDb);
 
+        final VerticalLayout doctorLayout;
+
         doctorsGrid = new Grid();
         patientGrid = new Grid();
         recipeGrid = new Grid();
@@ -65,9 +65,25 @@ public class MainUI extends UI {
         final VerticalLayout patientLayout = new VerticalLayout();
         final VerticalLayout recipeLayout = new VerticalLayout();
 
+        final HorizontalLayout doctorButtonLayout = new HorizontalLayout();
+        final HorizontalLayout patientButtonLayout = new HorizontalLayout();
+        final HorizontalLayout recipeButtonLayout = new HorizontalLayout();
+
+        final Button addDoctorButton = new Button("Добавить");
+        final Button changeDoctorButton = new Button("Изменить");
+        final Button deleteDoctorButton = new Button("Удалить");
+
+        final Button addPatientButton = new Button("Добавить");
+        final Button changePatientButton = new Button("Изменить");
+        final Button deletePatientButton = new Button("Удалить");
+
+        final Button addRecipeButton = new Button("Добавить");
+        final Button changeRecipeButton = new Button("Изменить");
+        final Button deleteRecipeButton = new Button("Удалить");
 
 
         doctorLayout.setSizeFull();
+        doctorButtonLayout.setWidth("400px");
         patientLayout.setSizeFull();
         recipeLayout.setSizeFull();
         tabLayout.setSizeFull();
@@ -78,10 +94,27 @@ public class MainUI extends UI {
 
         recipeGrid.setWidth("1200px");
 
+        doctorButtonLayout.addComponent(addDoctorButton);
+        doctorButtonLayout.addComponent(changeDoctorButton);
+        doctorButtonLayout.addComponent(deleteDoctorButton);
+
+        patientButtonLayout.addComponent(addPatientButton);
+        patientButtonLayout.addComponent(changePatientButton);
+        patientButtonLayout.addComponent(deletePatientButton);
+
+        recipeButtonLayout.addComponent(addRecipeButton);
+        recipeButtonLayout.addComponent(changeRecipeButton);
+        recipeButtonLayout.addComponent(deleteRecipeButton);
 
         doctorLayout.addComponent(doctorsGrid);
+        doctorLayout.addComponent(doctorButtonLayout);
+
         patientLayout.addComponent(patientGrid);
+        patientLayout.addComponent(patientButtonLayout);
+
         recipeLayout.addComponent(recipeGrid);
+        recipeLayout.addComponent(recipeButtonLayout);
+
         tabLayout.addComponent(tabSheet);
 
         tabSheet.setSizeFull();
@@ -112,8 +145,9 @@ public class MainUI extends UI {
         recipeGrid.getColumn("dateOfCreate").setHeaderCaption("Дата назначения");
         recipeGrid.getColumn("validity").setHeaderCaption("Срок действия\n  (дни)");
         recipeGrid.getColumn("priority").setHeaderCaption("Приоритет");
-       /* recipeGrid.getColumn("dateOfCreate").setRenderer(new DateRenderer("%1$tB %1$te, %1$tY",
-                Locale.ENGLISH));*/
+
+
+
         setContent(tabLayout);
 
         updateDoctors();
