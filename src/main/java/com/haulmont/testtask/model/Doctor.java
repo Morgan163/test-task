@@ -61,6 +61,10 @@ public class Doctor {
         this.specialization = specialization;
     }
 
+    public String getSmallName(){
+        return surname+" "+name.substring(0,1)+". "+secondName.substring(0,1)+".";
+    }
+
 
 
     @Override

@@ -6,7 +6,6 @@ import com.haulmont.testtask.DAO.PatientDAO;
 import com.haulmont.testtask.DAO.RecipeDAO;
 import com.haulmont.testtask.database.ConnectionToDb;
 import com.haulmont.testtask.exceptions.ExecuteSQLException;
-import com.haulmont.testtask.model.Patient;
 import com.haulmont.testtask.model.Recipe;
 
 import java.sql.ResultSet;
@@ -24,6 +23,7 @@ public class RecipeDAOImpl implements RecipeDAO {
     private DoctorDAO doctorDAO;
     private PatientDAO patientDAO;
     private DAOAbstractFactory daoAbstractFactory;
+    private GregorianCalendar calendar = new GregorianCalendar();
 
     public RecipeDAOImpl(ConnectionToDb connection) {
         this.connection = connection;
@@ -34,15 +34,16 @@ public class RecipeDAOImpl implements RecipeDAO {
 
     @Override
     public long create(Recipe recipe) throws ExecuteSQLException {
+        calendar.setTime(recipe.getDateOfCreate());
         String sql = "INSERT INTO RECIPES (id, description, patient_id, doctor_id, date_of_create, validity, priority)\n" +
                 " VALUES (NEXT VALUE FOR recipeSequence," +
                 " \'" +recipe.getDescription()+"\',"+
                 " " +recipe.getPatient()+","+
                 " "+recipe.getDoctor()+","+
                 " to_date(\'"
-                    +recipe.getDateOfCreate().get(Calendar.DAY_OF_MONTH)+ "/"
-                    +recipe.getDateOfCreate().get(Calendar.MONTH)+"/"
-                    +recipe.getDateOfCreate().get(Calendar.YEAR)+"\', 'DD/MM/YYYY'),"+
+                    +calendar.get(Calendar.DAY_OF_MONTH)+ "/"
+                    +calendar.get(Calendar.MONTH)+"/"
+                    +calendar.get(Calendar.YEAR)+"\', 'DD/MM/YYYY'),"+
                 " "+recipe.getValidity()+","+
                 " \'"+recipe.getPriority()+"\';";
         try {
@@ -53,9 +54,9 @@ public class RecipeDAOImpl implements RecipeDAO {
                     " AND patient_id = " + recipe.getPatient()+
                     " AND doctor_id = "+recipe.getDoctor()+
                     " AND date_of_create = to_date(\'"
-                    +recipe.getDateOfCreate().get(Calendar.DAY_OF_MONTH)+ "/"
-                    +recipe.getDateOfCreate().get(Calendar.MONTH)+"/"
-                    +recipe.getDateOfCreate().get(Calendar.YEAR)+"\', 'DD/MM/YYYY'),"+
+                    +calendar.get(Calendar.DAY_OF_MONTH)+ "/"
+                    +calendar.get(Calendar.MONTH)+"/"
+                    +calendar.get(Calendar.YEAR)+"\', 'DD/MM/YYYY'),"+
                     " AND validity = "+recipe.getValidity()+
                     " AND priority = "+recipe.getPriority();
             ResultSet resultSet = connection.executeSQL(sql);
@@ -67,14 +68,15 @@ public class RecipeDAOImpl implements RecipeDAO {
 
     @Override
     public void update(Recipe recipe) throws ExecuteSQLException {
+        calendar.setTime(recipe.getDateOfCreate());
         String sql = "UPDATE RECIPES" +
                 " SET description = " +recipe.getDescription()+
                 " ,patient_id = " + recipe.getPatient()+
                 " ,doctor_id = "+recipe.getDoctor()+
                 " ,date_of_create = to_date(\'"
-                    +recipe.getDateOfCreate().get(Calendar.DAY_OF_MONTH)+ "/"
-                    +recipe.getDateOfCreate().get(Calendar.MONTH)+"/"
-                    +recipe.getDateOfCreate().get(Calendar.YEAR)+"\', 'DD/MM/YYYY'),"+
+                    +calendar.get(Calendar.DAY_OF_MONTH)+ "/"
+                    +calendar.get(Calendar.MONTH)+"/"
+                    +calendar.get(Calendar.YEAR)+"\', 'DD/MM/YYYY'),"+
                 " ,validity = "+recipe.getValidity()+
                 " ,priority = "+recipe.getPriority()+
                 " WHERE id = "+recipe.getId();
@@ -105,13 +107,11 @@ public class RecipeDAOImpl implements RecipeDAO {
         ResultSet resultSet;
         try {
             resultSet = connection.executeSQL(sql);
-            GregorianCalendar calendar = null;
-            resultSet.getDate(5,calendar);
             recipe = new Recipe(resultSet.getLong(1),
                     resultSet.getString(2),
                     patientDAO.read(resultSet.getLong(3)),
                     doctorDAO.read(resultSet.getLong(4)),
-                    calendar,
+                    resultSet.getDate(5),
                     resultSet.getInt(6),
                     resultSet.getString(7));
         } catch (SQLException e) {
@@ -130,13 +130,11 @@ public class RecipeDAOImpl implements RecipeDAO {
         try {
             resultSet = connection.executeSQL(sql);
             while(resultSet.next()) {
-                GregorianCalendar calendar = new GregorianCalendar();
-                calendar.setTime(resultSet.getDate(5));
                 recipe = new Recipe(resultSet.getLong(1),
                         resultSet.getString(2),
                         patientDAO.read(resultSet.getLong(3)),
                         doctorDAO.read(resultSet.getLong(4)),
-                        calendar,
+                        resultSet.getDate(5),
                         resultSet.getInt(6),
                         resultSet.getString(7));
                 recipes.add(recipe);

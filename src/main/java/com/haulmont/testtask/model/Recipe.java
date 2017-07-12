@@ -1,6 +1,6 @@
 package com.haulmont.testtask.model;
 
-import java.util.GregorianCalendar;
+import java.util.Date;
 
 /**
  * Created by andrei on 09.07.17.
@@ -10,12 +10,12 @@ public class Recipe {
     private String description;
     private Patient patient;
     private Doctor doctor;
-    private GregorianCalendar dateOfCreate;
+    private Date dateOfCreate;
     private int validity;
     private String priority;
 
 
-    public Recipe(long id, String description, Patient patient, Doctor doctor, GregorianCalendar dateOfCreate, int validity, String priority) {
+    public Recipe(long id, String description, Patient patient, Doctor doctor, Date dateOfCreate, int validity, String priority) {
 
         this.id = id;
         this.description = description;
@@ -59,11 +59,11 @@ public class Recipe {
         this.doctor = doctor;
     }
 
-    public GregorianCalendar getDateOfCreate() {
+    public Date getDateOfCreate() {
         return dateOfCreate;
     }
 
-    public void setDateOfCreate(GregorianCalendar dateOfCreate) {
+    public void setDateOfCreate(Date dateOfCreate) {
         this.dateOfCreate = dateOfCreate;
     }
 

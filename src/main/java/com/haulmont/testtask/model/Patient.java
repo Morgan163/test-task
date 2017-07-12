@@ -58,6 +58,10 @@ public class Patient {
         this.phoneNumber = phoneNumber;
     }
 
+    public String getSmallName(){
+        return surname+" "+name.substring(0,1)+". "+secondName.substring(0,1)+".";
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

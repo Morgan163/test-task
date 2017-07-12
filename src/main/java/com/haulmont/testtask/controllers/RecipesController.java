@@ -9,10 +9,7 @@ import com.haulmont.testtask.model.Doctor;
 import com.haulmont.testtask.model.Patient;
 import com.haulmont.testtask.model.Recipe;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by anlu0816 on 7/10/2017.
@@ -32,7 +29,7 @@ public class RecipesController extends AbstractController {
     }
 
     public long addRecipe(String description, Patient patient, Doctor doctor,
-                          GregorianCalendar dateOfCreate, int validity, String priority) throws AddDataException {
+                          Date dateOfCreate, int validity, String priority) throws AddDataException {
         try {
             validate(description,patient,doctor,dateOfCreate,validity,priority);
             return recipeDAO.create(new Recipe(FAKE_ID,description,patient,doctor,dateOfCreate,
@@ -43,7 +40,7 @@ public class RecipesController extends AbstractController {
     }
 
     public void changeRecipe(String description, Patient patient, Doctor doctor,
-                             GregorianCalendar dateOfCreate, int validity, String priority) throws ChangeDataException {
+                             Date dateOfCreate, int validity, String priority) throws ChangeDataException {
         try {
             validate(description,patient,doctor,dateOfCreate,validity,priority);
             recipeDAO.update(new Recipe(FAKE_ID,description,patient,doctor,dateOfCreate,
@@ -92,7 +89,9 @@ public class RecipesController extends AbstractController {
     }
 
     private void validate(String description, Patient patient, Doctor doctor,
-                          GregorianCalendar dateOfCreate, int validity, String priority) throws DataException {
+                          Date dateOfCreate1, int validity, String priority) throws DataException {
+        GregorianCalendar dateOfCreate = new GregorianCalendar();
+        dateOfCreate.setTime(dateOfCreate1);
         validateString(description,DESCRIPTION_LIMIT,"ОПИСАНИЕ");
         if(patient==null){
             throw new DataException("ПАЦИЕНТ не выбран");

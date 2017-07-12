@@ -9,9 +9,15 @@ import com.haulmont.testtask.model.Doctor;
 import com.haulmont.testtask.model.Patient;
 import com.haulmont.testtask.model.Recipe;
 import com.vaadin.annotations.Theme;
+import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.GeneratedPropertyContainer;
+import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 import java.awt.*;
@@ -80,9 +86,9 @@ public class MainUI extends UI {
 
         tabSheet.setSizeFull();
 
-        tabSheet.addTab(doctorLayout,"Doctors");
-        tabSheet.addTab(patientLayout,"Patients");
-        tabSheet.addTab(recipeLayout,"Recipes");
+        tabSheet.addTab(doctorLayout,"Доктора");
+        tabSheet.addTab(patientLayout,"Пациенты");
+        tabSheet.addTab(recipeLayout,"Рецепты");
 
         doctorsGrid.setColumns("surname","name","secondName","specialization");
         doctorsGrid.getColumn("surname").setHeaderCaption("Фамилия");
@@ -96,9 +102,18 @@ public class MainUI extends UI {
         patientGrid.getColumn("secondName").setHeaderCaption("Отчество");
         patientGrid.getColumn("phoneNumber").setHeaderCaption("Номер телефона");
 
-        recipeGrid.setColumns("patient.surname","patient.name","patient.secondName",
-                "doctor.surname","doctor.name","doctor.secondName","description","dateOfCreate","validity","priority");
-        recipeGrid.getColumn("description").setMaximumWidth(100);
+
+
+        recipeGrid.setColumns("patientName","doctorName","description","dateOfCreate","validity","priority");
+        recipeGrid.getColumn("description").setResizable(true);
+        recipeGrid.getColumn("patientName").setHeaderCaption("Пациент");
+        recipeGrid.getColumn("doctorName").setHeaderCaption("Доктор");
+        recipeGrid.getColumn("description").setHeaderCaption("Описание рецепта");
+        recipeGrid.getColumn("dateOfCreate").setHeaderCaption("Дата назначения");
+        recipeGrid.getColumn("validity").setHeaderCaption("Срок действия\n  (дни)");
+        recipeGrid.getColumn("priority").setHeaderCaption("Приоритет");
+       /* recipeGrid.getColumn("dateOfCreate").setRenderer(new DateRenderer("%1$tB %1$te, %1$tY",
+                Locale.ENGLISH));*/
         setContent(tabLayout);
 
         updateDoctors();
@@ -134,10 +149,42 @@ public class MainUI extends UI {
         Set<Recipe> recipes = null;
         try {
             recipes = recipesController.getRecipes();
+
             final BeanItemContainer<Recipe> beanItemContainer = new BeanItemContainer<Recipe>(Recipe.class, recipes);
             beanItemContainer.addNestedContainerBean("patient");
             beanItemContainer.addNestedContainerBean("doctor");
-            recipeGrid.setContainerDataSource(beanItemContainer);
+            GeneratedPropertyContainer container = new GeneratedPropertyContainer(beanItemContainer);
+            container.addGeneratedProperty("patientName", new PropertyValueGenerator<String>() {
+
+                @Override
+                public String getValue(Item item, Object o, Object o1) {
+                    String name = (String)item.getItemProperty("patient.name").getValue();
+                    String surname = (String)item.getItemProperty("patient.surname").getValue();
+                    String secondName = (String)item.getItemProperty("patient.secondName").getValue();
+                    return surname+" "+name.substring(0,1)+". "+secondName.substring(0,1)+".";
+                }
+
+                @Override
+                public Class<String> getType() {
+                    return String.class;
+                }
+            });
+            container.addGeneratedProperty("doctorName", new PropertyValueGenerator<String>() {
+
+                @Override
+                public String getValue(Item item, Object o, Object o1) {
+                    String name = (String)item.getItemProperty("doctor.name").getValue();
+                    String surname = (String)item.getItemProperty("doctor.surname").getValue();
+                    String secondName = (String)item.getItemProperty("doctor.secondName").getValue();
+                    return surname+" "+name.substring(0,1)+". "+secondName.substring(0,1)+".";
+                }
+
+                @Override
+                public Class<String> getType() {
+                    return String.class;
+                }
+            });
+            recipeGrid.setContainerDataSource(container);
         } catch (DataException e) {
             e.printStackTrace();
         }
