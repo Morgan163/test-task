@@ -38,10 +38,10 @@ public class DoctorsController extends AbstractController {
             throw new AddDataException(e.getMessage());
         }
     }
-    public void changeDoctor(String name, String surname, String secondName, String specialization) throws ChangeDataException {
+    public void changeDoctor(long id, String name, String surname, String secondName, String specialization) throws ChangeDataException {
         try {
             validate(name,surname,secondName,specialization);
-            doctorDAO.update(new Doctor(FAKE_ID,name,surname,secondName,specialization));
+            doctorDAO.update(new Doctor(id,name,surname,secondName,specialization));
         } catch (ExecuteSQLException | DataException e) {
             throw new ChangeDataException(e.getMessage());
         }

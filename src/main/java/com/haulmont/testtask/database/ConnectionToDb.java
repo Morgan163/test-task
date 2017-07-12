@@ -1,5 +1,6 @@
 package com.haulmont.testtask.database;
 
+import com.haulmont.testtask.controllers.DoctorsController;
 import com.haulmont.testtask.controllers.RecipesController;
 import com.haulmont.testtask.exceptions.DataException;
 
@@ -59,12 +60,13 @@ public class ConnectionToDb {
         return sql;
     }
 
-    public void execute(String sql) {
+    public void execute(String sql) throws SQLException {
         try {
             Statement statement = connection.createStatement();
             statement.executeUpdate(sql);
         } catch (SQLException e) {
             System.err.println(e.getMessage());
+            throw e;
         }
     }
 
@@ -93,7 +95,8 @@ public class ConnectionToDb {
     public static void main(String[] args) throws SQLException, DataException {
         ConnectionToDb db = new ConnectionToDb();
         RecipesController recipesController = new RecipesController(db);
-        recipesController.getRecipes();
+        DoctorsController doctorsController = new DoctorsController(db);
+        doctorsController.changeDoctor(5,"Кирил","Лопаткин","Иванович","Терапевт");
        /* if (db.loadDriver()) {
             Connection connection = db.getConnection();
             try {

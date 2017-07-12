@@ -29,17 +29,21 @@ public class DoctorDAOImpl implements DoctorDAO {
                 " \'" +doctor.getName()+"\',"+
                 " \'"+doctor.getSurname()+"\',"+
                 " \'"+doctor.getSecondName()+"\',"+
-                " \'"+doctor.getSpecialization()+"\';";
+                " \'"+doctor.getSpecialization()+"\')";
         try {
             connection.executeSQL(sql);
             sql = "SELECT id" +
                     " FROM DOCTORS" +
-                    " WHERE name = "+doctor.getName()+
-                    " AND surname = "+doctor.getSurname()+
-                    " AND second_name = "+doctor.getSecondName()+
-                    " AND specialization = "+doctor.getSpecialization();
+                    " WHERE name = \'"+doctor.getName()+"\'"+
+                    " AND surname = \'"+doctor.getSurname()+"\'"+
+                    " AND second_name = \'"+doctor.getSecondName()+"\'"+
+                    " AND specialization = \'"+doctor.getSpecialization()+"\'";
             ResultSet resultSet = connection.executeSQL(sql);
-            return  resultSet.getLong(1);
+            long id=0;
+            while(resultSet.next()){
+                id = resultSet.getLong(1);
+            }
+            return  id;
         } catch (SQLException e) {
             throw new ExecuteSQLException("Ошибка при добавлении записи \n"+e.getMessage());
         }
@@ -48,10 +52,10 @@ public class DoctorDAOImpl implements DoctorDAO {
     @Override
     public void update(Doctor doctor) throws ExecuteSQLException {
         String sql = "UPDATE DOCTORS" +
-                " SET name = "+doctor.getName()+
-                " ,surname = "+doctor.getSurname()+
-                " ,second_name = "+doctor.getSecondName()+
-                " ,specialization = "+doctor.getSpecialization()+
+                " SET name = '"+doctor.getName()+"\'"+
+                " ,surname = \'"+doctor.getSurname()+"\'"+
+                " ,second_name = \'"+doctor.getSecondName()+"\'"+
+                " ,specialization = \'"+doctor.getSpecialization()+"\'"+
                 " WHERE id = "+doctor.getId();
         try {
             connection.executeSQL(sql);
@@ -63,7 +67,7 @@ public class DoctorDAOImpl implements DoctorDAO {
     @Override
     public void delete(Doctor doctor) throws ExecuteSQLException {
         String sql = "DELETE FROM DOCTORS" +
-                "WHERE id = "+doctor.getId();
+                " WHERE id = "+doctor.getId();
         try {
             connection.executeSQL(sql);
         } catch (SQLException e) {
@@ -97,7 +101,7 @@ public class DoctorDAOImpl implements DoctorDAO {
     public Set<Doctor> readAll() throws ExecuteSQLException {
         Set<Doctor> doctors = new HashSet<>();
         String sql = "SELECT *" +
-                "FROM DOCTORS";
+                " FROM DOCTORS";
         ResultSet resultSet;
         try {
             resultSet = connection.executeSQL(sql);

@@ -28,19 +28,19 @@ public class PatientsController extends AbstractController {
         patientDAO = daoAbstractFactory.getPatientDAO(connectionToDb);
     }
 
-    public long addPatient(String name, String surname, String secondName, long phoneNumber) throws AddDataException {
+    public long addPatient(String name, String surname, String secondName, String phoneNumber) throws AddDataException {
         try {
-            validate(name,surname,secondName,phoneNumber);
-            return patientDAO.create(new Patient(FAKE_ID,name,surname,secondName,phoneNumber));
+
+            return patientDAO.create(validate(name,surname,secondName,phoneNumber));
         } catch (ExecuteSQLException | DataException e) {
             throw new AddDataException(e.getMessage());
         }
     }
 
-    public void changePatient(String name, String surname, String secondName, long phoneNumber) throws ChangeDataException {
+    public void changePatient(long id,String name, String surname, String secondName, String phoneNumber) throws ChangeDataException {
         try {
-            validate(name,surname,secondName,phoneNumber);
-            patientDAO.update(new Patient(FAKE_ID,name,surname,secondName,phoneNumber));
+
+            patientDAO.update(validate(name,surname,secondName,phoneNumber));
         } catch (ExecuteSQLException | DataException e) {
             throw new ChangeDataException(e.getMessage());
         }
@@ -76,12 +76,17 @@ public class PatientsController extends AbstractController {
         return patientMap.get(id);
     }
 
-    private void validate(String name, String surname, String secondName, long phoneNumber) throws DataException {
+    private Patient validate(String name, String surname, String secondName, String phoneNumber) throws DataException {
         validateString(name,NAME_LIMIT,"ИМЯ");
         validateString(surname,SURNAME_LIMIT,"ФАМИЛИЯ");
         validateString(secondName,SECOND_NAME_LIMIT,"ОТЧЕСТВО");
-        if(phoneNumber==0){
+        if(phoneNumber.matches(".*\\D.*")){
+            throw new DataException("Строка НОМЕР ТЕЛЕФОНА должна состоять из цифр");
+        }
+        long phone = Long.parseLong(phoneNumber);
+        if(phone==0){
             throw new DataException("Строка НОМЕР ТЕЛЕФОНА пустая");
         }
+        return new Patient(FAKE_ID,name, surname, secondName, phone);
     }
 }

@@ -27,17 +27,21 @@ public class PatientDAOImpl implements PatientDAO {
                 " \'" +patient.getName()+"\',"+
                 " \'"+patient.getSurname()+"\',"+
                 " \'"+patient.getSecondName()+"\',"+
-                " "+patient.getPhoneNumber()+";";
+                " "+patient.getPhoneNumber()+")";
         try {
             connection.executeSQL(sql);
             sql = "SELECT id" +
                     " FROM PATIENTS" +
-                    " WHERE name = "+patient.getName()+
-                    " AND surname = "+patient.getSurname()+
-                    " AND second_name = "+patient.getSecondName()+
+                    " WHERE name = \'"+patient.getName()+"\'"+
+                    " AND surname = \'"+patient.getSurname()+"\'"+
+                    " AND second_name = \'"+patient.getSecondName()+"\'"+
                     " AND phone_number = "+patient.getPhoneNumber();
             ResultSet resultSet = connection.executeSQL(sql);
-            return  resultSet.getLong(1);
+            long id=0;
+            while(resultSet.next()){
+                id = resultSet.getLong(1);
+            }
+            return id;
         } catch (SQLException e) {
             throw new ExecuteSQLException("Ошибка при добавлении записи \n"+e.getMessage());
         }
@@ -46,9 +50,9 @@ public class PatientDAOImpl implements PatientDAO {
     @Override
     public void update(Patient patient) throws ExecuteSQLException {
         String sql = "UPDATE PATIENTS" +
-                " SET name = "+patient.getName()+
-                " ,surname = "+patient.getSurname()+
-                " ,second_name = "+patient.getSecondName()+
+                " SET name = '"+patient.getName()+"\'"+
+                " ,surname = \'"+patient.getSurname()+"\'"+
+                " ,second_name = \'"+patient.getSecondName()+"\'"+
                 " ,phone_number = "+patient.getPhoneNumber()+
                 " WHERE id = "+patient.getId();
         try {
@@ -61,7 +65,7 @@ public class PatientDAOImpl implements PatientDAO {
     @Override
     public void delete(Patient patient) throws ExecuteSQLException {
         String sql = "DELETE FROM PATIENTS" +
-                "WHERE id = "+patient.getId();
+                " WHERE id = "+patient.getId();
         try {
             connection.executeSQL(sql);
         } catch (SQLException e) {

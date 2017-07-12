@@ -45,12 +45,12 @@ public class RecipeDAOImpl implements RecipeDAO {
                     +calendar.get(Calendar.MONTH)+"/"
                     +calendar.get(Calendar.YEAR)+"\', 'DD/MM/YYYY'),"+
                 " "+recipe.getValidity()+","+
-                " \'"+recipe.getPriority()+"\';";
+                " \'"+recipe.getPriority()+"\')";
         try {
             connection.executeSQL(sql);
             sql = "SELECT id" +
                     " FROM RECIPES" +
-                    " WHERE description = " +recipe.getDescription()+
+                    " WHERE description = \'" +recipe.getDescription()+"\'"+
                     " AND patient_id = " + recipe.getPatient()+
                     " AND doctor_id = "+recipe.getDoctor()+
                     " AND date_of_create = to_date(\'"
@@ -58,9 +58,13 @@ public class RecipeDAOImpl implements RecipeDAO {
                     +calendar.get(Calendar.MONTH)+"/"
                     +calendar.get(Calendar.YEAR)+"\', 'DD/MM/YYYY'),"+
                     " AND validity = "+recipe.getValidity()+
-                    " AND priority = "+recipe.getPriority();
+                    " AND priority = \'"+recipe.getPriority()+"\'";
             ResultSet resultSet = connection.executeSQL(sql);
-            return  resultSet.getLong(1);
+            long id=0;
+            while(resultSet.next()){
+                id = resultSet.getLong(1);
+            }
+            return  id;
         } catch (SQLException e) {
             throw new ExecuteSQLException("Ошибка при добавлении записи \n"+e.getMessage());
         }
@@ -70,7 +74,7 @@ public class RecipeDAOImpl implements RecipeDAO {
     public void update(Recipe recipe) throws ExecuteSQLException {
         calendar.setTime(recipe.getDateOfCreate());
         String sql = "UPDATE RECIPES" +
-                " SET description = " +recipe.getDescription()+
+                " SET description = '" +recipe.getDescription()+"\'"+
                 " ,patient_id = " + recipe.getPatient()+
                 " ,doctor_id = "+recipe.getDoctor()+
                 " ,date_of_create = to_date(\'"
@@ -78,7 +82,7 @@ public class RecipeDAOImpl implements RecipeDAO {
                     +calendar.get(Calendar.MONTH)+"/"
                     +calendar.get(Calendar.YEAR)+"\', 'DD/MM/YYYY'),"+
                 " ,validity = "+recipe.getValidity()+
-                " ,priority = "+recipe.getPriority()+
+                " ,priority = '"+recipe.getPriority()+"\'"+
                 " WHERE id = "+recipe.getId();
         try {
             connection.executeSQL(sql);
@@ -90,7 +94,7 @@ public class RecipeDAOImpl implements RecipeDAO {
     @Override
     public void delete(Recipe recipe) throws ExecuteSQLException {
         String sql = "DELETE FROM RECIPES" +
-                "WHERE id = "+recipe.getId();
+                " WHERE id = "+recipe.getId();
         try {
             connection.executeSQL(sql);
         } catch (SQLException e) {

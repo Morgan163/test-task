@@ -39,11 +39,11 @@ public class RecipesController extends AbstractController {
         }
     }
 
-    public void changeRecipe(String description, Patient patient, Doctor doctor,
+    public void changeRecipe(long id, String description, Patient patient, Doctor doctor,
                              Date dateOfCreate, int validity, String priority) throws ChangeDataException {
         try {
             validate(description,patient,doctor,dateOfCreate,validity,priority);
-            recipeDAO.update(new Recipe(FAKE_ID,description,patient,doctor,dateOfCreate,
+            recipeDAO.update(new Recipe(id,description,patient,doctor,dateOfCreate,
                     validity,priority));
         } catch (ExecuteSQLException | DataException e) {
             throw new ChangeDataException(e.getMessage());
