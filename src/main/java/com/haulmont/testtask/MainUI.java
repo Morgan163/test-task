@@ -133,7 +133,7 @@ public class MainUI extends UI {
         deleteRecipeButton.addClickListener(e -> deleteRecipeButtonListener());
 
         patientsBoxFilter.setContainerDataSource(getPatientContainer());
-        patientsBoxFilter.setNullSelectionItemId("");
+        patientsBoxFilter.setNullSelectionItemId(new Patient(0,"","","",0));
         patientsBoxFilter.setItemCaptionPropertyId("patientName");
 
         priorityFilter.addItems(PriorityEnum.values());
@@ -396,7 +396,7 @@ public class MainUI extends UI {
         verticalLayout.setSizeFull();
         Grid statisticGrid = new Grid();
         statisticGrid.setSizeFull();
-        //statisticGrid.setWidth("300px");
+        statisticGrid.setWidth("430px");;
         statisticGrid.addColumn("doctor",String.class).setHeaderCaption("Доктор");
         statisticGrid.addColumn("numberOfRecipes", Integer.class).setHeaderCaption("Кол-во рецептов");
         try {
@@ -411,13 +411,13 @@ public class MainUI extends UI {
             window.setSizeFull();
             window.center();
             window.setHeight("600px");
-            window.setWidth("400px");
+            window.setWidth("500px");
             window.setClosable(true);
             verticalLayout.setMargin(new MarginInfo(true,true,true,true));
             verticalLayout.setSpacing(true);
             verticalLayout.addComponent(statisticGrid);
             //verticalLayout.setComponentAlignment(statisticGrid,Alignment.MIDDLE_CENTER);
-            window.setContent(verticalLayout);
+            window.setContent(statisticGrid);
 
             UI.getCurrent().addWindow(window);
         } catch (DataException e) {
