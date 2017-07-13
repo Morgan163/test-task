@@ -431,6 +431,7 @@ public class MainUI extends UI {
         verticalLayout.setSizeFull();
         Grid statisticGrid = new Grid();
         statisticGrid.setSizeFull();
+        statisticGrid.setSelectionMode(Grid.SelectionMode.NONE);
         statisticGrid.setWidth("430px");;
         statisticGrid.addColumn("doctor",String.class).setHeaderCaption("Доктор");
         statisticGrid.addColumn("numberOfRecipes", Integer.class).setHeaderCaption("Кол-во рецептов");
