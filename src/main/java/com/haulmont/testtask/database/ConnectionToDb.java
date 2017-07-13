@@ -5,10 +5,7 @@ import com.haulmont.testtask.controllers.PatientsController;
 import com.haulmont.testtask.controllers.RecipesController;
 import com.haulmont.testtask.exceptions.DataException;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.sql.*;
 
 
@@ -36,7 +33,12 @@ public class ConnectionToDb {
     public Connection getConnection() throws SQLException {
         connection = null;
         try {
+            boolean b = new File("testdb.script").exists();
             connection = DriverManager.getConnection("jdbc:hsqldb:file:testdb", "SA", "");
+
+            if(!b){
+                initBd();
+            }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             throw new SQLException();
@@ -93,26 +95,30 @@ public class ConnectionToDb {
         }
     }
 
-    /*private void initBd() {
+    private void initBd() {
         if (loadDriver()) {
             try {
                 Connection connection = getConnection();
                 executeSQL("SELECT * FROM RECIPES");
             } catch (SQLException e) {
-                db.execute(getSqlFromFile("src/main/resources/sql/createPatientTable.sql"));
-                db.execute(db.getSqlFromFile("src/main/resources/sql/createDoctorTable.sql"));
-                db.execute(db.getSqlFromFile("src/main/resources/sql/createRecipeTable.sql"));
-                db.execute(db.getSqlFromFile("src/main/resources/sql/alterTableForRecipe.sql"));
-                db.execute(db.getSqlFromFile("src/main/resources/sql/patientSequence.sql"));
-                db.execute(db.getSqlFromFile("src/main/resources/sql/doctorSequence.sql"));
-                db.execute(db.getSqlFromFile("src/main/resources/sql/recipeSequence.sql"));
-                db.execute(db.getSqlFromFile("src/main/resources/sql/insertIntoTables.sql"));
-                db.execute(db.getSqlFromFile("src/main/resources/sql/patientRemoveTrigger.sql"));
-                db.execute(db.getSqlFromFile("src/main/resources/sql/doctorRemoveTrigger.sql"));
+                try {
+                    execute(getSqlFromFile("src/main/resources/sql/createPatientTable.sql"));
+                    execute(getSqlFromFile("src/main/resources/sql/createDoctorTable.sql"));
+                    execute(getSqlFromFile("src/main/resources/sql/createRecipeTable.sql"));
+                    execute(getSqlFromFile("src/main/resources/sql/alterTableForRecipe.sql"));
+                    execute(getSqlFromFile("src/main/resources/sql/patientSequence.sql"));
+                    execute(getSqlFromFile("src/main/resources/sql/doctorSequence.sql"));
+                    execute(getSqlFromFile("src/main/resources/sql/recipeSequence.sql"));
+                    execute(getSqlFromFile("src/main/resources/sql/insertIntoTables.sql"));
+                    execute(getSqlFromFile("src/main/resources/sql/patientRemoveTrigger.sql"));
+                    execute(getSqlFromFile("src/main/resources/sql/doctorRemoveTrigger.sql"));
+                } catch (SQLException e1) {
+                    System.err.println(e1.getMessage());
+
+                }
             }
-            db.closeConnection(connection);
         }
-    }*/
+    }
 
     public static void main(String[] args) throws SQLException, DataException {
         ConnectionToDb db = new ConnectionToDb();
