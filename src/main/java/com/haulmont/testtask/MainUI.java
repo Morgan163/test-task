@@ -133,14 +133,17 @@ public class MainUI extends UI {
         deleteRecipeButton.addClickListener(e -> deleteRecipeButtonListener());
 
         patientsBoxFilter.setContainerDataSource(getPatientContainer());
-        patientsBoxFilter.setNullSelectionItemId(new Patient(0,"","","",0));
+        patientsBoxFilter.setNullSelectionAllowed(true);
+        Patient nullPatient = new Patient(0,"","","",0);
+        patientsBoxFilter.addItem(nullPatient);
+        patientsBoxFilter.setNullSelectionItemId(nullPatient);
         patientsBoxFilter.setItemCaptionPropertyId("patientName");
 
         priorityFilter.addItems(PriorityEnum.values());
         priorityFilter.setNullSelectionItemId("");
 
         applyFilter.addClickListener(e -> applyFilterListener());
-        cancelFilter.addClickListener(e -> cancelFilterListener());
+        cancelFilter.addClickListener(e -> cancelFilterListener(nullPatient));
 
 
         doctorLayout.setSizeFull();
@@ -309,6 +312,9 @@ public class MainUI extends UI {
                     String name = (String)item.getItemProperty("name").getValue();
                     String surname = (String)item.getItemProperty("surname").getValue();
                     String secondName = (String)item.getItemProperty("secondName").getValue();
+                    if("".equals(name)){
+                        return "";
+                    }
                     return surname+" "+name.substring(0,1)+". "+secondName.substring(0,1)+".";
                 }
 
@@ -344,9 +350,12 @@ public class MainUI extends UI {
         }
     }
 
-    private void cancelFilterListener(){
+    private void cancelFilterListener(Patient nullPatient){
         try {
             updateRecipes(recipesController.getRecipes());
+            patientsBoxFilter.select(nullPatient);
+            priorityFilter.select("");
+            descriptionFilter.setValue("");
         } catch (DataException e) {
             Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
         }
