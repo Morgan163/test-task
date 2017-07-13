@@ -133,10 +133,11 @@ public class MainUI extends UI {
         deleteRecipeButton.addClickListener(e -> deleteRecipeButtonListener());
 
         patientsBoxFilter.setContainerDataSource(getPatientContainer());
-        patientsBoxFilter.setNullSelectionItemId(false);
+        patientsBoxFilter.setNullSelectionItemId("");
         patientsBoxFilter.setItemCaptionPropertyId("patientName");
 
         priorityFilter.addItems(PriorityEnum.values());
+        priorityFilter.setNullSelectionItemId("");
 
         applyFilter.addClickListener(e -> applyFilterListener());
         cancelFilter.addClickListener(e -> cancelFilterListener());

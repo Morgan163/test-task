@@ -83,6 +83,7 @@ public class RecipesController extends AbstractController {
             if(filter){
                 recipesAfterF.add(recipe);
             }
+            filter = true;
         }
         return recipesAfterF;
     }
