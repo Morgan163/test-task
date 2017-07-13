@@ -93,23 +93,13 @@ public class ConnectionToDb {
         }
     }
 
-    public static void main(String[] args) throws SQLException, DataException {
-        ConnectionToDb db = new ConnectionToDb();
-        RecipesController recipesController = new RecipesController(db);
-        DoctorsController doctorsController = new DoctorsController(db);
-        PatientsController patientsController = new PatientsController(db);
-        //patientsController.changePatient(2,"Сергей","Корнеев","Сергеевич","89564736582");
-        //doctorsController.changeDoctor(5,"Кирил","Лопаткин","Иванович","Терапевт");
-        //recipesController.addRecipe("12",new Patient(1,"f","f","f",5555555),
-        //        new Doctor(2,"d","d","d","d"),
-        //        new Date(20495840),"3","Нормальный");
-        recipesController.getRecipesAfterFilter(1,"Нормальный","4",recipesController.getRecipes());
-       /* if (db.loadDriver()) {
-            Connection connection = db.getConnection();
+    /*private void initBd() {
+        if (loadDriver()) {
             try {
-                db.executeSQL("SELECT * FROM RECIPES");
+                Connection connection = getConnection();
+                executeSQL("SELECT * FROM RECIPES");
             } catch (SQLException e) {
-                db.execute(db.getSqlFromFile("src/main/resources/sql/createPatientTable.sql"));
+                db.execute(getSqlFromFile("src/main/resources/sql/createPatientTable.sql"));
                 db.execute(db.getSqlFromFile("src/main/resources/sql/createDoctorTable.sql"));
                 db.execute(db.getSqlFromFile("src/main/resources/sql/createRecipeTable.sql"));
                 db.execute(db.getSqlFromFile("src/main/resources/sql/alterTableForRecipe.sql"));
@@ -121,7 +111,24 @@ public class ConnectionToDb {
                 db.execute(db.getSqlFromFile("src/main/resources/sql/doctorRemoveTrigger.sql"));
             }
             db.closeConnection(connection);
+        }
+    }*/
+
+    public static void main(String[] args) throws SQLException, DataException {
+        ConnectionToDb db = new ConnectionToDb();
+        RecipesController recipesController = new RecipesController(db);
+        DoctorsController doctorsController = new DoctorsController(db);
+        PatientsController patientsController = new PatientsController(db);
+        //patientsController.changePatient(2,"Сергей","Корнеев","Сергеевич","89564736582");
+        //doctorsController.changeDoctor(5,"Кирил","Лопаткин","Иванович","Терапевт");
+        //recipesController.addRecipe("12",new Patient(1,"f","f","f",5555555),
+        //        new Doctor(2,"d","d","d","d"),
+        //        new Date(20495840),"3","Нормальный");
+        //recipesController.getRecipesAfterFilter(1,"Нормальный","4",recipesController.getRecipes());
+       /*
+
         }*/
+       patientsController.getPatients();
 
     }
 }

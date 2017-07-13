@@ -15,13 +15,13 @@ public abstract class AbstractController {
 
     protected void validateString(String str, int limit, String strName) throws DataException {
         if(str!=null){
-            if("".equals(str)){
-                throw new DataException("Строка "+strName+" не введена");
-            }else if(str.length()>limit){
-                throw new DataException("Строка "+strName+" должна содержать <"+limit+" символов");
-            }else if((!strName.equals("ОПИСАНИЕ")&&(!str.matches("\\D*")))){
-                throw new DataException("Строка "+strName+" не должна содержать цифры");
-            }
+                if ("".equals(str)) {
+                    throw new DataException("Строка " + strName + " не введена");
+                } else if (str.length() > limit) {
+                    throw new DataException("Строка " + strName + " должна содержать <" + limit + " символов");
+                } else if ((!strName.equals("ОПИСАНИЕ") && (!str.matches("\\D*")))) {
+                    throw new DataException("Строка " + strName + " не должна содержать цифры");
+                }
         }else{
             throw new DataException("Строка "+strName+" не введена");
         }

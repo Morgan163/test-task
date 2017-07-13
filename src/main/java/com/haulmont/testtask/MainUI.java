@@ -34,39 +34,41 @@ public class MainUI extends UI {
     private PatientsController patientsController;
     private RecipesController recipesController;
 
-    final VerticalLayout doctorLayout = new VerticalLayout();
-    final VerticalLayout patientLayout = new VerticalLayout();
-    final VerticalLayout recipeLayout = new VerticalLayout();
+    final private VerticalLayout doctorLayout = new VerticalLayout();
+    final private VerticalLayout patientLayout = new VerticalLayout();
+    final private VerticalLayout recipeLayout = new VerticalLayout();
 
-    final HorizontalLayout doctorButtonLayout = new HorizontalLayout();
-    final HorizontalLayout patientButtonLayout = new HorizontalLayout();
-    final HorizontalLayout recipeButtonLayout = new HorizontalLayout();
+    final private HorizontalLayout doctorButtonLayout = new HorizontalLayout();
+    final private HorizontalLayout patientButtonLayout = new HorizontalLayout();
+    final private HorizontalLayout recipeButtonLayout = new HorizontalLayout();
 
-    final HorizontalLayout filterLayout = new HorizontalLayout();
+    final private HorizontalLayout filterLayout = new HorizontalLayout();
 
     private final Grid doctorsGrid;
     private final Grid patientGrid;
     private final Grid recipeGrid;
 
-    final Button addDoctorButton = new Button("Добавить");
-    final Button changeDoctorButton = new Button("Изменить");
-    final Button deleteDoctorButton = new Button("Удалить");
-    final Button doctorStatisticButton = new Button("Статистика");
+    final private Button addDoctorButton = new Button("Добавить");
+    final private Button changeDoctorButton = new Button("Изменить");
+    final private Button deleteDoctorButton = new Button("Удалить");
+    final private Button doctorStatisticButton = new Button("Статистика");
 
-    final Button addPatientButton = new Button("Добавить");
-    final Button changePatientButton = new Button("Изменить");
-    final Button deletePatientButton = new Button("Удалить");
+    final private Button addPatientButton = new Button("Добавить");
+    final private Button changePatientButton = new Button("Изменить");
+    final private Button deletePatientButton = new Button("Удалить");
 
-    final Button addRecipeButton = new Button("Добавить");
-    final Button changeRecipeButton = new Button("Изменить");
-    final Button deleteRecipeButton = new Button("Удалить");
+    final private Button addRecipeButton = new Button("Добавить");
+    final private Button changeRecipeButton = new Button("Изменить");
+    final private Button deleteRecipeButton = new Button("Удалить");
 
-    final Label filter = new Label("Фильтр");
-    final ComboBox patientsBoxFilter = new ComboBox("Пациент");
-    final NativeSelect priorityFilter = new NativeSelect("Приоритет");
-    final TextField descriptionFilter = new TextField("Описание");
-    final Button applyFilter = new Button("Применить");
-    final Button cancelFilter = new Button("Отменить");
+    private final Patient nullPatient = new Patient(0,"","","",0);
+
+    final private Label filter = new Label("Фильтр");
+    final private ComboBox patientsBoxFilter = new ComboBox("Пациент");
+    final private NativeSelect priorityFilter = new NativeSelect("Приоритет");
+    final private TextField descriptionFilter = new TextField("Описание");
+    final private Button applyFilter = new Button("Применить");
+    final private Button cancelFilter = new Button("Отменить");
 
     private TabSheet tabSheet;
     private enum PriorityEnum {
@@ -89,14 +91,17 @@ public class MainUI extends UI {
             }
         }};
 
-    public MainUI() throws SQLException {
-        connectionToDb = new ConnectionToDb();
+    public MainUI() {
+
+        try {
+            connectionToDb = new ConnectionToDb();
+        } catch (SQLException e) {
+            Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
+        }
 
         doctorsController = new DoctorsController(connectionToDb);
         patientsController = new PatientsController(connectionToDb);
         recipesController = new RecipesController(connectionToDb);
-
-        final VerticalLayout doctorLayout;
 
         doctorsGrid = new Grid();
         doctorsGrid.setSizeFull();
@@ -111,6 +116,8 @@ public class MainUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
+
+
 
         VerticalLayout tabLayout = new VerticalLayout();
 
@@ -132,12 +139,8 @@ public class MainUI extends UI {
         changeRecipeButton.addClickListener(e -> changeRecipeButtonListener());
         deleteRecipeButton.addClickListener(e -> deleteRecipeButtonListener());
 
-        patientsBoxFilter.setContainerDataSource(getPatientContainer());
-        patientsBoxFilter.setNullSelectionAllowed(true);
-        Patient nullPatient = new Patient(0,"","","",0);
-        patientsBoxFilter.addItem(nullPatient);
-        patientsBoxFilter.setNullSelectionItemId(nullPatient);
-        patientsBoxFilter.setItemCaptionPropertyId("patientName");
+
+        updatePatientsCombo();
 
         priorityFilter.addItems(PriorityEnum.values());
         priorityFilter.setNullSelectionItemId("");
@@ -145,10 +148,17 @@ public class MainUI extends UI {
         applyFilter.addClickListener(e -> applyFilterListener());
         cancelFilter.addClickListener(e -> cancelFilterListener(nullPatient));
 
+        /*priorityFilter.setHeight("30px");
+        patientsBoxFilter.setHeight("30px");
+        descriptionFilter.setHeight("30px");
+        applyFilter.setHeight("30px");
+        cancelFilter.setHeight("30px");
+        filter.setHeight("30px");
+        filterLayout.setHeight("50px");*/
 
         doctorLayout.setSizeFull();
         doctorButtonLayout.setSizeFull();
-        doctorButtonLayout.setWidth("600px");
+        doctorButtonLayout.setWidth("400px");
 
         patientLayout.setSizeFull();
         patientButtonLayout.setSizeFull();
@@ -169,17 +179,17 @@ public class MainUI extends UI {
         recipeButtonLayout.setSpacing(true);
         doctorLayout.setMargin(true);
         patientLayout.setMargin(true);
-        recipeLayout.setMargin(true);
-        filterLayout.setMargin(true);
+        recipeLayout.setMargin(new MarginInfo(false,true,true,true));
+        filterLayout.setMargin(new MarginInfo(false,true,false,true));
         filterLayout.setSpacing(true);
 
-        filterLayout.setHeight("10px");
+
 
         filterLayout.addComponents(filter,patientsBoxFilter,priorityFilter,descriptionFilter,applyFilter,cancelFilter);
 
 
         doctorButtonLayout.addComponents(addDoctorButton,changeDoctorButton,
-                deleteDoctorButton, doctorStatisticButton);
+                deleteDoctorButton);
 
         patientButtonLayout.addComponents(addPatientButton,changePatientButton,
                 deletePatientButton);
@@ -187,12 +197,20 @@ public class MainUI extends UI {
         recipeButtonLayout.addComponents(addRecipeButton,changeRecipeButton,
                 deleteRecipeButton);
 
-        doctorLayout.addComponents(doctorsGrid,doctorButtonLayout);
-        doctorLayout.getExpandRatio(doctorButtonLayout);
+        doctorStatisticButton.setHeight("30px");
+        doctorLayout.addComponents(doctorStatisticButton,doctorsGrid,doctorButtonLayout);
+        doctorLayout.setExpandRatio(doctorStatisticButton,0.05f);
+        doctorLayout.setExpandRatio(doctorsGrid,0.6f);
+        doctorLayout.setExpandRatio(doctorButtonLayout,0.2f);
 
         patientLayout.addComponents(patientGrid,patientButtonLayout);
+        patientLayout.setExpandRatio(patientGrid,0.6f);
+        patientLayout.setExpandRatio(patientButtonLayout,0.2f);
 
         recipeLayout.addComponents(filterLayout,recipeGrid,recipeButtonLayout);
+        recipeLayout.setExpandRatio(filterLayout,0.1f);
+        recipeLayout.setExpandRatio(recipeGrid,0.6f);
+        recipeLayout.setExpandRatio(recipeButtonLayout,0.2f);
 
         tabLayout.addComponent(tabSheet);
 
@@ -259,6 +277,7 @@ public class MainUI extends UI {
             Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
         }
         patientGrid.setContainerDataSource(new BeanItemContainer<>(Patient.class,patients));
+        updatePatientsCombo();
     }
 
     public void updateRecipes(Set<Recipe> recipes) {
@@ -330,6 +349,13 @@ public class MainUI extends UI {
         return container;
     }
 
+    private void updatePatientsCombo(){
+        patientsBoxFilter.setContainerDataSource(getPatientContainer());
+        patientsBoxFilter.setNullSelectionAllowed(true);
+        patientsBoxFilter.addItem(nullPatient);
+        patientsBoxFilter.setNullSelectionItemId(nullPatient);
+        patientsBoxFilter.setItemCaptionPropertyId("patientName");
+    }
     private void applyFilterListener(){
         long id;
         String priority = "";
