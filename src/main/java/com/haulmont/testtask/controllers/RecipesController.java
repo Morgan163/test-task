@@ -29,22 +29,21 @@ public class RecipesController extends AbstractController {
     }
 
     public long addRecipe(String description, Patient patient, Doctor doctor,
-                          Date dateOfCreate, int validity, String priority) throws AddDataException {
+                          Date dateOfCreate, String validity, String priority) throws AddDataException {
         try {
-            validate(description,patient,doctor,dateOfCreate,validity,priority);
-            return recipeDAO.create(new Recipe(FAKE_ID,description,patient,doctor,dateOfCreate,
-                    validity,priority));
+
+            return recipeDAO.create( validate(description,patient,doctor,dateOfCreate,validity,priority));
         } catch (ExecuteSQLException | DataException e) {
             throw new AddDataException(e.getMessage());
         }
     }
 
     public void changeRecipe(long id, String description, Patient patient, Doctor doctor,
-                             Date dateOfCreate, int validity, String priority) throws ChangeDataException {
+                             Date dateOfCreate, String validity, String priority) throws ChangeDataException {
         try {
-            validate(description,patient,doctor,dateOfCreate,validity,priority);
-            recipeDAO.update(new Recipe(id,description,patient,doctor,dateOfCreate,
-                    validity,priority));
+            Recipe recipe = validate(description,patient,doctor,dateOfCreate,validity,priority);
+            recipe.setId(id);
+            recipeDAO.update(recipe);
         } catch (ExecuteSQLException | DataException e) {
             throw new ChangeDataException(e.getMessage());
         }
@@ -88,8 +87,8 @@ public class RecipesController extends AbstractController {
         return recipesAfterF;
     }
 
-    private void validate(String description, Patient patient, Doctor doctor,
-                          Date dateOfCreate1, int validity, String priority) throws DataException {
+    private Recipe validate(String description, Patient patient, Doctor doctor,
+                          Date dateOfCreate1, String validity, String priority) throws DataException {
         GregorianCalendar dateOfCreate = new GregorianCalendar();
         dateOfCreate.setTime(dateOfCreate1);
         validateString(description,DESCRIPTION_LIMIT,"ОПИСАНИЕ");
@@ -106,14 +105,18 @@ public class RecipesController extends AbstractController {
             if(dateOfCreate.get(Calendar.MONTH)>today.get(Calendar.MONTH)){
                 throw  new DataException("Выбранная дата больше текущей");
             }else if(dateOfCreate.get(Calendar.MONTH)==today.get(Calendar.MONTH)){
-                if(dateOfCreate.get(Calendar.DAY_OF_MONTH)<=today.get(Calendar.DAY_OF_MONTH)){
+                if(dateOfCreate.get(Calendar.DAY_OF_MONTH)>today.get(Calendar.DAY_OF_MONTH)){
                     throw  new DataException("Выбранная дата больше текущей");
                 }
             }
         }
-        if(validity==0){
+        if(validity.matches(".*\\D.*")){
+            throw new DataException("Строка СРОК ДЕЙСТВИЯ должна состоять из цифр");
+        }
+        if(Integer.parseInt(validity)==0){
             throw  new DataException("Строка СРОК ДЕЙСТВИЯ пуста");
         }
         validateString(priority,PRIORITY_LIMIT,"ПРИОРИТЕТ");
+        return new Recipe(FAKE_ID,description,patient,doctor,dateOfCreate1,Integer.parseInt(validity),priority);
     }
 }

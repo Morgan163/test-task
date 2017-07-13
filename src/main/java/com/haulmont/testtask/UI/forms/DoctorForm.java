@@ -52,7 +52,7 @@ public class DoctorForm extends FormLayout {
         try {
             connectionToDb = new ConnectionToDb();
         } catch (SQLException e) {
-            Notification.show(e.getMessage());
+            Notification.show(e.getMessage(),Notification.Type.ERROR_MESSAGE);
         }
         doctorsController = new DoctorsController(connectionToDb);
 
@@ -83,7 +83,7 @@ public class DoctorForm extends FormLayout {
             mainUI.updateDoctors();
             doctorWindow.close();
         } catch (AddDataException | ChangeDataException e) {
-            Notification.show(e.getMessage());
+            Notification.show(e.getMessage(),Notification.Type.ERROR_MESSAGE);
         }
     }
 

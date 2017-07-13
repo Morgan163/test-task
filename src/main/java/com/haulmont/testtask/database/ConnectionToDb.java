@@ -1,8 +1,11 @@
 package com.haulmont.testtask.database;
 
 import com.haulmont.testtask.controllers.DoctorsController;
+import com.haulmont.testtask.controllers.PatientsController;
 import com.haulmont.testtask.controllers.RecipesController;
 import com.haulmont.testtask.exceptions.DataException;
+import com.haulmont.testtask.model.Doctor;
+import com.haulmont.testtask.model.Patient;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -96,7 +99,12 @@ public class ConnectionToDb {
         ConnectionToDb db = new ConnectionToDb();
         RecipesController recipesController = new RecipesController(db);
         DoctorsController doctorsController = new DoctorsController(db);
-        doctorsController.changeDoctor(5,"Кирил","Лопаткин","Иванович","Терапевт");
+        PatientsController patientsController = new PatientsController(db);
+        //patientsController.changePatient(2,"Сергей","Корнеев","Сергеевич","89564736582");
+        //doctorsController.changeDoctor(5,"Кирил","Лопаткин","Иванович","Терапевт");
+        recipesController.addRecipe("12",new Patient(1,"f","f","f",5555555),
+                new Doctor(2,"d","d","d","d"),
+                new Date(20495840),"3","Нормальный");
        /* if (db.loadDriver()) {
             Connection connection = db.getConnection();
             try {

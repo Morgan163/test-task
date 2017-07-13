@@ -39,8 +39,9 @@ public class PatientsController extends AbstractController {
 
     public void changePatient(long id,String name, String surname, String secondName, String phoneNumber) throws ChangeDataException {
         try {
-
-            patientDAO.update(validate(name,surname,secondName,phoneNumber));
+            Patient patient = validate(name,surname,secondName,phoneNumber);
+            patient.setId(id);
+            patientDAO.update(patient);
         } catch (ExecuteSQLException | DataException e) {
             throw new ChangeDataException(e.getMessage());
         }

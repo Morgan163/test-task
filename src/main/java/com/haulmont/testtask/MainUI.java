@@ -11,18 +11,17 @@ import com.haulmont.testtask.model.Patient;
 import com.haulmont.testtask.model.Recipe;
 import com.haulmont.testtask.windows.DoctorWindow;
 import com.haulmont.testtask.windows.PatientWindow;
+import com.haulmont.testtask.windows.RecipeWindow;
 import com.vaadin.annotations.Theme;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.ui.Button;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.*;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
-import java.awt.*;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Set;
@@ -35,11 +34,60 @@ public class MainUI extends UI {
     private PatientsController patientsController;
     private RecipesController recipesController;
 
+    final VerticalLayout doctorLayout = new VerticalLayout();
+    final VerticalLayout patientLayout = new VerticalLayout();
+    final VerticalLayout recipeLayout = new VerticalLayout();
+
+    final HorizontalLayout doctorButtonLayout = new HorizontalLayout();
+    final HorizontalLayout patientButtonLayout = new HorizontalLayout();
+    final HorizontalLayout recipeButtonLayout = new HorizontalLayout();
+
+    final HorizontalLayout filterLayout = new HorizontalLayout();
+
     private final Grid doctorsGrid;
     private final Grid patientGrid;
     private final Grid recipeGrid;
 
+    final Button addDoctorButton = new Button("Добавить");
+    final Button changeDoctorButton = new Button("Изменить");
+    final Button deleteDoctorButton = new Button("Удалить");
+    final Button doctorStatisticButton = new Button("Статистика");
+
+    final Button addPatientButton = new Button("Добавить");
+    final Button changePatientButton = new Button("Изменить");
+    final Button deletePatientButton = new Button("Удалить");
+
+    final Button addRecipeButton = new Button("Добавить");
+    final Button changeRecipeButton = new Button("Изменить");
+    final Button deleteRecipeButton = new Button("Удалить");
+
+    final Label filter = new Label("Фильтр");
+    final ComboBox patientsBoxFilter = new ComboBox("Пациент");
+    final NativeSelect priorityFilter = new NativeSelect("Приоритет");
+    final TextField descriptionFilter = new TextField("Описание");
+    final Button applyFilter = new Button("Применить");
+    final Button cancelFilter = new Button("Отменить");
+
     private TabSheet tabSheet;
+    private enum PriorityEnum {
+        Нормальный{
+            @Override
+            public String toString() {
+                return "Нормальный";
+            }
+        },
+        Срочный{
+            @Override
+            public String toString() {
+                return "Срочный";
+            }
+        },
+        Немедленный{
+            @Override
+            public String toString() {
+                return "Немедленный";
+            }
+        }};
 
     public MainUI() throws SQLException {
         connectionToDb = new ConnectionToDb();
@@ -59,7 +107,6 @@ public class MainUI extends UI {
 
         tabSheet = new TabSheet();
 
-
     }
 
     @Override
@@ -67,38 +114,37 @@ public class MainUI extends UI {
 
         VerticalLayout tabLayout = new VerticalLayout();
 
-        final VerticalLayout doctorLayout = new VerticalLayout();
-        final VerticalLayout patientLayout = new VerticalLayout();
-        final VerticalLayout recipeLayout = new VerticalLayout();
 
-        final HorizontalLayout doctorButtonLayout = new HorizontalLayout();
-        final HorizontalLayout patientButtonLayout = new HorizontalLayout();
-        final HorizontalLayout recipeButtonLayout = new HorizontalLayout();
 
-        final Button addDoctorButton = new Button("Добавить");
+
         addDoctorButton.addClickListener(e->addDoctorButtonListener());
-        final Button changeDoctorButton = new Button("Изменить");
         changeDoctorButton.addClickListener(e->changeDoctorButtonListener());
-        final Button deleteDoctorButton = new Button("Удалить");
         deleteDoctorButton.addClickListener(e->deleteDoctorButtonListener());
-        final Button doctorStatisticButton = new Button("Статистика");
         doctorStatisticButton.addClickListener(e->getStatisticListener());
 
-        final Button addPatientButton = new Button("Добавить");
+
         addPatientButton.addClickListener(e -> addPatientButtonListener());
-        final Button changePatientButton = new Button("Изменить");
         changePatientButton.addClickListener(e -> changePatientButtonListener());
-        final Button deletePatientButton = new Button("Удалить");
         deletePatientButton.addClickListener(e -> deletePatientButtonListener());
 
-        final Button addRecipeButton = new Button("Добавить");
-        final Button changeRecipeButton = new Button("Изменить");
-        final Button deleteRecipeButton = new Button("Удалить");
+
+        addRecipeButton.addClickListener(e->addRecipeButtonListener());
+        changeRecipeButton.addClickListener(e -> changeRecipeButtonListener());
+        deleteRecipeButton.addClickListener(e -> deleteRecipeButtonListener());
+
+        patientsBoxFilter.setContainerDataSource(getPatientContainer());
+        patientsBoxFilter.setNullSelectionItemId(false);
+        patientsBoxFilter.setItemCaptionPropertyId("patientName");
+
+        priorityFilter.addItems(PriorityEnum.values());
+
+        applyFilter.addClickListener(e -> applyFilterListener());
+        cancelFilter.addClickListener(e -> cancelFilterListener());
 
 
         doctorLayout.setSizeFull();
         doctorButtonLayout.setSizeFull();
-        doctorButtonLayout.setWidth("500px");
+        doctorButtonLayout.setWidth("600px");
 
         patientLayout.setSizeFull();
         patientButtonLayout.setSizeFull();
@@ -110,9 +156,22 @@ public class MainUI extends UI {
 
         tabLayout.setSizeFull();
 
+
+        doctorButtonLayout.setMargin(true);
+        doctorButtonLayout.setSpacing(true);
+        patientButtonLayout.setMargin(true);
+        patientButtonLayout.setSpacing(true);
+        recipeButtonLayout.setMargin(true);
+        recipeButtonLayout.setSpacing(true);
         doctorLayout.setMargin(true);
         patientLayout.setMargin(true);
         recipeLayout.setMargin(true);
+        filterLayout.setMargin(true);
+        filterLayout.setSpacing(true);
+
+        filterLayout.setHeight("10px");
+
+        filterLayout.addComponents(filter,patientsBoxFilter,priorityFilter,descriptionFilter,applyFilter,cancelFilter);
 
 
         doctorButtonLayout.addComponents(addDoctorButton,changeDoctorButton,
@@ -125,10 +184,11 @@ public class MainUI extends UI {
                 deleteRecipeButton);
 
         doctorLayout.addComponents(doctorsGrid,doctorButtonLayout);
+        doctorLayout.getExpandRatio(doctorButtonLayout);
 
         patientLayout.addComponents(patientGrid,patientButtonLayout);
 
-        recipeLayout.addComponents(recipeGrid,recipeButtonLayout);
+        recipeLayout.addComponents(filterLayout,recipeGrid,recipeButtonLayout);
 
         tabLayout.addComponent(tabSheet);
 
@@ -167,7 +227,11 @@ public class MainUI extends UI {
 
         updateDoctors();
         updatePatients();
-        updateRecipes();
+        try {
+            updateRecipes(recipesController.getRecipes());
+        } catch (DataException e) {
+            Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
+        }
 
     }
 
@@ -177,9 +241,8 @@ public class MainUI extends UI {
 
         try {
             doctors = doctorsController.getDoctors();
-            ;
         } catch (DataException e) {
-            e.printStackTrace();
+            Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
         }
         doctorsGrid.setContainerDataSource(new BeanItemContainer<>(Doctor.class, doctors));
     }
@@ -189,16 +252,12 @@ public class MainUI extends UI {
         try {
             patients = patientsController.getPatients();
         } catch (DataException e) {
-            e.printStackTrace();
+            Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
         }
         patientGrid.setContainerDataSource(new BeanItemContainer<>(Patient.class,patients));
     }
 
-    public void updateRecipes() {
-        Set<Recipe> recipes = null;
-        try {
-            recipes = recipesController.getRecipes();
-
+    public void updateRecipes(Set<Recipe> recipes) {
             final BeanItemContainer<Recipe> beanItemContainer = new BeanItemContainer<>(Recipe.class, recipes);
             beanItemContainer.addNestedContainerBean("patient");
             beanItemContainer.addNestedContainerBean("doctor");
@@ -234,11 +293,62 @@ public class MainUI extends UI {
                 }
             });
             recipeGrid.setContainerDataSource(container);
+
+    }
+
+    private GeneratedPropertyContainer getPatientContainer(){
+        GeneratedPropertyContainer container = null;
+        try {
+            final BeanItemContainer<Patient> beanItemContainer = new BeanItemContainer<>(Patient.class, patientsController.getPatients());
+            container = new GeneratedPropertyContainer(beanItemContainer);
+            container.addGeneratedProperty("patientName", new PropertyValueGenerator<String>() {
+
+                @Override
+                public String getValue(Item item, Object o, Object o1) {
+                    String name = (String)item.getItemProperty("name").getValue();
+                    String surname = (String)item.getItemProperty("surname").getValue();
+                    String secondName = (String)item.getItemProperty("secondName").getValue();
+                    return surname+" "+name.substring(0,1)+". "+secondName.substring(0,1)+".";
+                }
+
+                @Override
+                public Class<String> getType() {
+                    return String.class;
+                }
+            });
+
         } catch (DataException e) {
-            e.printStackTrace();
+            Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
         }
+        return container;
+    }
 
+    private void applyFilterListener(){
+        long id;
+        String priority = "";
+        String description = "";
+        if(patientsBoxFilter.getValue()!=null){
+            id = ((Patient)patientsBoxFilter.getValue()).getId();
+        }else{
+            id = 0;
+        }
+        if(priorityFilter.getValue()!=null){
+            priority = ((PriorityEnum)priorityFilter.getValue()).toString();
+        }
+        description = descriptionFilter.getValue();
+        try {
+            updateRecipes(recipesController.getRecipesAfterFilter(id,priority,description, recipesController.getRecipes()));
+        } catch (DataException e) {
+            Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
+        }
+    }
 
+    private void cancelFilterListener(){
+        try {
+            updateRecipes(recipesController.getRecipes());
+        } catch (DataException e) {
+            Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
+        }
     }
 
     private void addDoctorButtonListener() {
@@ -269,22 +379,23 @@ public class MainUI extends UI {
     private void deleteDoctorButtonListener(){
         Doctor doctor = (Doctor) doctorsGrid.getSelectedRow();
         if(doctor==null){
-            Notification.show("Строка для изменения не выбрана");
+            Notification.show("Строка для удаления не выбрана");
         }else {
             try {
                 doctorsController.deleteDoctor(doctor);
                 updateDoctors();
             } catch (DeleteDataException e) {
-                Notification.show(e.getMessage());
+                Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
             }
         }
     }
 
     private void getStatisticListener(){
         FormLayout verticalLayout = new FormLayout();
+        verticalLayout.setSizeFull();
         Grid statisticGrid = new Grid();
         statisticGrid.setSizeFull();
-        statisticGrid.setWidth("300px");
+        //statisticGrid.setWidth("300px");
         statisticGrid.addColumn("doctor",String.class).setHeaderCaption("Доктор");
         statisticGrid.addColumn("numberOfRecipes", Integer.class).setHeaderCaption("Кол-во рецептов");
         try {
@@ -301,8 +412,12 @@ public class MainUI extends UI {
             window.setHeight("600px");
             window.setWidth("400px");
             window.setClosable(true);
+            verticalLayout.setMargin(new MarginInfo(true,true,true,true));
+            verticalLayout.setSpacing(true);
             verticalLayout.addComponent(statisticGrid);
+            //verticalLayout.setComponentAlignment(statisticGrid,Alignment.MIDDLE_CENTER);
             window.setContent(verticalLayout);
+
             UI.getCurrent().addWindow(window);
         } catch (DataException e) {
             Notification.show(e.getMessage());
@@ -337,13 +452,54 @@ public class MainUI extends UI {
     private void deletePatientButtonListener(){
        Patient patient = (Patient) patientGrid.getSelectedRow();
         if(patient==null){
-            Notification.show("Строка для изменения не выбрана");
+            Notification.show("Строка для удаления не выбрана");
         }else {
             try {
                 patientsController.deletePatient(patient);
                 updatePatients();
             } catch (DeleteDataException e) {
-                Notification.show(e.getMessage());
+                Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void addRecipeButtonListener(){
+        RecipeWindow recipeWindow = new RecipeWindow(this, null, "add");
+        recipeWindow.center();
+        recipeWindow.setClosable(false);
+        recipeWindow.setModal(true);
+        recipeWindow.setHeight("600px");
+        recipeWindow.setWidth("500px");
+        UI.getCurrent().addWindow(recipeWindow);
+    }
+
+    private void changeRecipeButtonListener(){
+        Recipe recipe = (Recipe) recipeGrid.getSelectedRow();
+        if(recipe==null){
+            Notification.show("Строка для изменения не выбрана");
+        }else{
+            RecipeWindow recipeWindow = new RecipeWindow(this, recipe, "change");
+            recipeWindow.center();
+            recipeWindow.setClosable(false);
+            recipeWindow.setModal(true);
+            recipeWindow.setHeight("600px");
+            recipeWindow.setWidth("400px");
+            UI.getCurrent().addWindow(recipeWindow);
+        }
+    }
+
+    private void deleteRecipeButtonListener(){
+        Recipe recipe = (Recipe) recipeGrid.getSelectedRow();
+        if(recipe==null){
+            Notification.show("Строка для удаления не выбрана");
+        }else{
+            try {
+                recipesController.deleteRecipe(recipe);
+                updateRecipes(recipesController.getRecipes());
+            } catch (DeleteDataException e) {
+                Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
+            } catch (DataException e) {
+                Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
             }
         }
     }

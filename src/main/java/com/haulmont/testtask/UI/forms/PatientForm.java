@@ -1,14 +1,11 @@
 package com.haulmont.testtask.UI.forms;
 
 import com.haulmont.testtask.MainUI;
-import com.haulmont.testtask.controllers.DoctorsController;
 import com.haulmont.testtask.controllers.PatientsController;
 import com.haulmont.testtask.database.ConnectionToDb;
 import com.haulmont.testtask.exceptions.AddDataException;
 import com.haulmont.testtask.exceptions.ChangeDataException;
-import com.haulmont.testtask.model.Doctor;
 import com.haulmont.testtask.model.Patient;
-import com.haulmont.testtask.windows.DoctorWindow;
 import com.haulmont.testtask.windows.PatientWindow;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
@@ -53,10 +50,11 @@ public class PatientForm extends FormLayout {
             connectionToDb = new ConnectionToDb();
             patientsController = new PatientsController(connectionToDb);
         } catch (SQLException e) {
-            Notification.show(e.getMessage());
+            Notification.show(e.getMessage(),Notification.Type.ERROR_MESSAGE);
         }
 
         setSizeFull();
+        setMargin(true);
         buttonLayout.setWidth("300px");
         buttonLayout.setSizeFull();
         buttonLayout.addComponents(ok,cancel);
@@ -86,7 +84,7 @@ public class PatientForm extends FormLayout {
             mainUI.updatePatients();
             patientWindow.close();
         } catch (ChangeDataException | AddDataException e) {
-            Notification.show(e.getMessage());
+            Notification.show(e.getMessage(),Notification.Type.ERROR_MESSAGE);
         }
     }
 

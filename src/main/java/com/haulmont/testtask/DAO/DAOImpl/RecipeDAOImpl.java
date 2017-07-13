@@ -35,11 +35,11 @@ public class RecipeDAOImpl implements RecipeDAO {
     @Override
     public long create(Recipe recipe) throws ExecuteSQLException {
         calendar.setTime(recipe.getDateOfCreate());
-        String sql = "INSERT INTO RECIPES (id, description, patient_id, doctor_id, date_of_create, validity, priority)\n" +
+        String sql = "INSERT INTO RECIPES (id, description, patient_id, doctor_id, date_of_create, validity, priority)" +
                 " VALUES (NEXT VALUE FOR recipeSequence," +
                 " \'" +recipe.getDescription()+"\',"+
-                " " +recipe.getPatient()+","+
-                " "+recipe.getDoctor()+","+
+                " " +recipe.getPatient().getId()+","+
+                " "+recipe.getDoctor().getId()+","+
                 " to_date(\'"
                     +calendar.get(Calendar.DAY_OF_MONTH)+ "/"
                     +calendar.get(Calendar.MONTH)+"/"
@@ -51,12 +51,12 @@ public class RecipeDAOImpl implements RecipeDAO {
             sql = "SELECT id" +
                     " FROM RECIPES" +
                     " WHERE description = \'" +recipe.getDescription()+"\'"+
-                    " AND patient_id = " + recipe.getPatient()+
-                    " AND doctor_id = "+recipe.getDoctor()+
+                    " AND patient_id = " + recipe.getPatient().getId()+
+                    " AND doctor_id = "+recipe.getDoctor().getId()+
                     " AND date_of_create = to_date(\'"
                     +calendar.get(Calendar.DAY_OF_MONTH)+ "/"
                     +calendar.get(Calendar.MONTH)+"/"
-                    +calendar.get(Calendar.YEAR)+"\', 'DD/MM/YYYY'),"+
+                    +calendar.get(Calendar.YEAR)+"\', 'DD/MM/YYYY')"+
                     " AND validity = "+recipe.getValidity()+
                     " AND priority = \'"+recipe.getPriority()+"\'";
             ResultSet resultSet = connection.executeSQL(sql);
@@ -75,12 +75,12 @@ public class RecipeDAOImpl implements RecipeDAO {
         calendar.setTime(recipe.getDateOfCreate());
         String sql = "UPDATE RECIPES" +
                 " SET description = '" +recipe.getDescription()+"\'"+
-                " ,patient_id = " + recipe.getPatient()+
-                " ,doctor_id = "+recipe.getDoctor()+
+                " ,patient_id = " + recipe.getPatient().getId()+
+                " ,doctor_id = "+recipe.getDoctor().getId()+
                 " ,date_of_create = to_date(\'"
                     +calendar.get(Calendar.DAY_OF_MONTH)+ "/"
                     +calendar.get(Calendar.MONTH)+"/"
-                    +calendar.get(Calendar.YEAR)+"\', 'DD/MM/YYYY'),"+
+                    +calendar.get(Calendar.YEAR)+"\', 'DD/MM/YYYY')"+
                 " ,validity = "+recipe.getValidity()+
                 " ,priority = '"+recipe.getPriority()+"\'"+
                 " WHERE id = "+recipe.getId();
