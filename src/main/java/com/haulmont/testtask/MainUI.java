@@ -42,7 +42,7 @@ public class MainUI extends UI {
     final private HorizontalLayout patientButtonLayout = new HorizontalLayout();
     final private HorizontalLayout recipeButtonLayout = new HorizontalLayout();
 
-    final private HorizontalLayout filterLayout = new HorizontalLayout();
+    final private CssLayout filterLayout = new CssLayout();
 
     private final Grid doctorsGrid;
     private final Grid patientGrid;
@@ -67,7 +67,7 @@ public class MainUI extends UI {
     final private ComboBox patientsBoxFilter = new ComboBox("Пациент");
     final private NativeSelect priorityFilter = new NativeSelect("Приоритет");
     final private TextField descriptionFilter = new TextField("Описание");
-    final private Button applyFilter = new Button("Применить");
+    final private Button applyFilter = new Button("Применить фильтр");
     final private Button cancelFilter = new Button("Отменить");
 
     private TabSheet tabSheet;
@@ -130,6 +130,7 @@ public class MainUI extends UI {
         doctorStatisticButton.addClickListener(e->getStatisticListener());
 
 
+
         addPatientButton.addClickListener(e -> addPatientButtonListener());
         changePatientButton.addClickListener(e -> changePatientButtonListener());
         deletePatientButton.addClickListener(e -> deletePatientButtonListener());
@@ -144,17 +145,14 @@ public class MainUI extends UI {
 
         priorityFilter.addItems(PriorityEnum.values());
         priorityFilter.setNullSelectionItemId("");
-
         applyFilter.addClickListener(e -> applyFilterListener());
         cancelFilter.addClickListener(e -> cancelFilterListener(nullPatient));
 
-        /*priorityFilter.setHeight("30px");
+        priorityFilter.setHeight("30px");
         patientsBoxFilter.setHeight("30px");
         descriptionFilter.setHeight("30px");
         applyFilter.setHeight("30px");
         cancelFilter.setHeight("30px");
-        filter.setHeight("30px");
-        filterLayout.setHeight("50px");*/
 
         doctorLayout.setSizeFull();
         doctorButtonLayout.setSizeFull();
@@ -180,12 +178,15 @@ public class MainUI extends UI {
         doctorLayout.setMargin(true);
         patientLayout.setMargin(true);
         recipeLayout.setMargin(new MarginInfo(false,true,true,true));
-        filterLayout.setMargin(new MarginInfo(false,true,false,true));
-        filterLayout.setSpacing(true);
+       /* filterLayout.setMargin(new MarginInfo(false,true,false,true));
+        filterLayout.setSpacing(true);*/
 
 
 
-        filterLayout.addComponents(filter,patientsBoxFilter,priorityFilter,descriptionFilter,applyFilter,cancelFilter);
+
+        filterLayout.addComponents(patientsBoxFilter,priorityFilter,descriptionFilter,applyFilter,cancelFilter);
+        filterLayout.setStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
+
 
 
         doctorButtonLayout.addComponents(addDoctorButton,changeDoctorButton,
@@ -208,13 +209,16 @@ public class MainUI extends UI {
         patientLayout.setExpandRatio(patientButtonLayout,0.2f);
 
         recipeLayout.addComponents(filterLayout,recipeGrid,recipeButtonLayout);
-        recipeLayout.setExpandRatio(filterLayout,0.1f);
+        recipeLayout.setExpandRatio(filterLayout,0.05f);
         recipeLayout.setExpandRatio(recipeGrid,0.6f);
         recipeLayout.setExpandRatio(recipeButtonLayout,0.2f);
 
         tabLayout.addComponent(tabSheet);
 
         tabSheet.setSizeFull();
+        tabSheet.setStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
+
+
 
         tabSheet.addTab(doctorLayout,"Доктора");
         tabSheet.addTab(patientLayout,"Пациенты");
@@ -394,6 +398,7 @@ public class MainUI extends UI {
         doctorWindow.setModal(true);
         doctorWindow.setHeight("300px");
         doctorWindow.setWidth("400px");
+        doctorWindow.setResizable(false);
         UI.getCurrent().addWindow(doctorWindow);
     }
 
@@ -408,6 +413,7 @@ public class MainUI extends UI {
             doctorWindow.setModal(true);
             doctorWindow.setHeight("300px");
             doctorWindow.setWidth("400px");
+            doctorWindow.setResizable(false);
             UI.getCurrent().addWindow(doctorWindow);
         }
     }
@@ -449,6 +455,7 @@ public class MainUI extends UI {
             window.setHeight("600px");
             window.setWidth("500px");
             window.setClosable(true);
+            window.setResizable(false);
             verticalLayout.setMargin(new MarginInfo(true,true,true,true));
             verticalLayout.setSpacing(true);
             verticalLayout.addComponent(statisticGrid);
@@ -468,6 +475,7 @@ public class MainUI extends UI {
         patientWindow.setModal(true);
         patientWindow.setHeight("300px");
         patientWindow.setWidth("400px");
+        patientWindow.setResizable(false);
         UI.getCurrent().addWindow(patientWindow);
     }
 
@@ -482,6 +490,7 @@ public class MainUI extends UI {
             patientWindow.setModal(true);
             patientWindow.setHeight("300px");
             patientWindow.setWidth("400px");
+            patientWindow.setResizable(false);
             UI.getCurrent().addWindow(patientWindow);
         }
     }
@@ -505,8 +514,9 @@ public class MainUI extends UI {
         recipeWindow.center();
         recipeWindow.setClosable(false);
         recipeWindow.setModal(true);
-        recipeWindow.setHeight("600px");
-        recipeWindow.setWidth("500px");
+        recipeWindow.setHeight("500px");
+        recipeWindow.setWidth("430px");
+        recipeWindow.setResizable(false);
         UI.getCurrent().addWindow(recipeWindow);
     }
 
@@ -519,8 +529,9 @@ public class MainUI extends UI {
             recipeWindow.center();
             recipeWindow.setClosable(false);
             recipeWindow.setModal(true);
-            recipeWindow.setHeight("600px");
-            recipeWindow.setWidth("400px");
+            recipeWindow.setHeight("500px");
+            recipeWindow.setWidth("430px");
+            recipeWindow.setResizable(false);
             UI.getCurrent().addWindow(recipeWindow);
         }
     }

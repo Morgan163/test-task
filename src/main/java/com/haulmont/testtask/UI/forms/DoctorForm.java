@@ -57,6 +57,7 @@ public class DoctorForm extends FormLayout {
         doctorsController = new DoctorsController(connectionToDb);
 
         setSizeFull();
+        setMargin(true);
         buttonLayout.setWidth("300px");
         buttonLayout.setSizeFull();
         buttonLayout.addComponents(ok,cancel);

@@ -105,10 +105,16 @@
                 </executions>
             </plugin>
             <plugin>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-maven-plugin</artifactId>
+                    <version>9.4.6.v20170531</version>
+            </plugin>
+          <!--  <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>8.1.16.v20140903</version>
-            </plugin>
+                <version>9.2.22.v20170606</version>
+                &lt;!&ndash;<version>8.1.16.v20140903</version>&ndash;&gt;
+            </plugin>-->
         </plugins>
     </build>
 </project>
