@@ -111,11 +111,14 @@ public class RecipesController extends AbstractController {
                 }
             }
         }
+        if("".equals(validity)){
+            throw  new DataException("Строка СРОК ДЕЙСТВИЯ пустая");
+        }
         if(validity.matches(".*\\D.*")){
             throw new DataException("Строка СРОК ДЕЙСТВИЯ должна состоять из цифр");
         }
         if(Integer.parseInt(validity)==0){
-            throw  new DataException("Строка СРОК ДЕЙСТВИЯ пуста");
+            throw  new DataException("Строка СРОК ДЕЙСТВИЯ пустая");
         }
         validateString(priority,PRIORITY_LIMIT,"ПРИОРИТЕТ");
         return new Recipe(FAKE_ID,description,patient,doctor,dateOfCreate1,Integer.parseInt(validity),priority);

@@ -81,6 +81,9 @@ public class PatientsController extends AbstractController {
         validateString(name,NAME_LIMIT,"ИМЯ");
         validateString(surname,SURNAME_LIMIT,"ФАМИЛИЯ");
         validateString(secondName,SECOND_NAME_LIMIT,"ОТЧЕСТВО");
+        if("".equals(phoneNumber)){
+            throw new DataException("Строка НОМЕР ТЕЛЕФОНА пустая");
+        }
         if(phoneNumber.matches(".*\\D.*")){
             throw new DataException("Строка НОМЕР ТЕЛЕФОНА должна состоять из цифр");
         }
